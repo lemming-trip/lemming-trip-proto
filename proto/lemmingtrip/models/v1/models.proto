@@ -1,0 +1,15 @@
+syntax = "proto3";
+package lemmingtrip.models.v1;
+
+option go_package = "github.com/lemming-trip/lemming-trip-proto/proto/lemmingtrip/models/v1;modelsv1";
+option java_multiple_files = true;
+option java_package = "com.lemmingtrip.models.v1";
+option swift_prefix = "LTModelsV1";
+
+message CreateUserResponse {
+  int64 id = 1;
+  string name = 2;
+  string email = 3;
+}
+
+message CreateUserRequest {}
