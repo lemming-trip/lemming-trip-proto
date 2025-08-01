@@ -1,0 +1,39 @@
+syntax = "proto3";
+package lemmingtrip.services.v1;
+
+import "lemmingtrip/models/v1/oauth_token.proto";
+
+option go_package = "github.com/lemming-trip/lemming-trip-proto/proto/lemmingtrip/services/v1;servicesv1";
+option java_multiple_files = true;
+option java_package = "com.lemmingtrip.services.v1";
+option swift_prefix = "LTServicesV1";
+
+service OAuthTokensService {
+  rpc CreateToken(lemmingtrip.models.v1.OAuthToken) returns (lemmingtrip.models.v1.OAuthToken);
+  rpc GetToken(GetTokenRequest) returns (lemmingtrip.models.v1.OAuthToken);
+  rpc RevokeToken(RevokeTokenRequest) returns (RevokeTokenResponse);
+  rpc ListTokens(ListTokensRequest) returns (ListTokensResponse);
+}
+
+message GetTokenRequest {
+  string id = 1;
+}
+
+message RevokeTokenRequest {
+  string id = 1;
+}
+
+message RevokeTokenResponse {
+  bool success = 1;
+}
+
+message ListTokensRequest {
+  string account_id = 1;
+  int32 page = 2;
+  int32 page_size = 3;
+}
+
+message ListTokensResponse {
+  repeated lemmingtrip.models.v1.OAuthToken tokens = 1;
+  int32 total = 2;
+}

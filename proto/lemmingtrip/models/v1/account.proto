@@ -1,0 +1,46 @@
+syntax = "proto3";
+
+package lemmingtrip.models.v1;
+
+option go_package = "github.com/lemming-trip/lemming-trip-proto/proto/lemmingtrip/models/v1;modelsv1";
+option java_multiple_files = true;
+option java_package = "com.lemmingtrip.models.v1";
+option swift_prefix = "LTModelsV1";
+
+enum AccountProvider {
+  ACCOUNT_PROVIDER_UNSPECIFIED = 0;
+  ACCOUNT_PROVIDER_LOCAL = 1;
+  ACCOUNT_PROVIDER_GOOGLE = 2;
+  ACCOUNT_PROVIDER_FACEBOOK = 3;
+  ACCOUNT_PROVIDER_MICROSOFT = 4;
+  ACCOUNT_PROVIDER_APPLE = 5;
+  ACCOUNT_PROVIDER_GITHUB = 6;
+  ACCOUNT_PROVIDER_DISCORD = 7;
+  ACCOUNT_PROVIDER_TELEGRAM = 8;
+  ACCOUNT_PROVIDER_LINKEDIN = 9;
+  ACCOUNT_PROVIDER_TWITTER = 10;
+  ACCOUNT_PROVIDER_YANDEX = 11;
+}
+
+message Account {
+  string id = 1;
+  string user_id = 2;
+  AccountProvider account_provider = 3;
+  string provider_user_id = 4;
+  string provider_email = 5;
+  string password_hash = 6;
+  string password_salt = 7;
+  string activation_code = 8;
+  string activation_expires_at = 9;
+  bool is_verified = 10;
+  string verified_at = 11;
+  bool mfa_enabled = 12;
+  string mfa_secret = 13;
+  repeated string mfa_backup_codes = 14;
+  int32 failed_login_attempts = 15;
+  string locked_until = 16;
+  string last_login_at = 17;
+  string last_login_ip = 18;
+  string created_at = 19;
+  string updated_at = 20;
+}

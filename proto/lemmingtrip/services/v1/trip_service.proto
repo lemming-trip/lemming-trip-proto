@@ -1,0 +1,40 @@
+syntax = "proto3";
+package lemmingtrip.services.v1;
+
+import "lemmingtrip/models/v1/trip.proto";
+
+option go_package = "github.com/lemming-trip/lemming-trip-proto/proto/lemmingtrip/services/v1;servicesv1";
+option java_multiple_files = true;
+option java_package = "com.lemmingtrip.services.v1";
+option swift_prefix = "LTServicesV1";
+
+service TripService {
+  rpc CreateTrip(lemmingtrip.models.v1.Trip) returns (lemmingtrip.models.v1.Trip);
+  rpc GetTrip(GetTripRequest) returns (lemmingtrip.models.v1.Trip);
+  rpc UpdateTrip(lemmingtrip.models.v1.Trip) returns (lemmingtrip.models.v1.Trip);
+  rpc DeleteTrip(DeleteTripRequest) returns (DeleteTripResponse);
+  rpc ListTrips(ListTripsRequest) returns (ListTripsResponse);
+}
+
+message GetTripRequest {
+  string id = 1;
+}
+
+message DeleteTripRequest {
+  string id = 1;
+}
+
+message DeleteTripResponse {
+  bool success = 1;
+}
+
+message ListTripsRequest {
+  int32 page = 1;
+  int32 page_size = 2;
+  string filter = 3;
+}
+
+message ListTripsResponse {
+  repeated lemmingtrip.models.v1.Trip trips = 1;
+  int32 total = 2;
+}

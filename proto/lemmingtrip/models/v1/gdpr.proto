@@ -1,0 +1,27 @@
+syntax = "proto3";
+
+package lemmingtrip.models.v1;
+
+option go_package = "github.com/lemming-trip/lemming-trip-proto/proto/lemmingtrip/models/v1;modelsv1";
+option java_multiple_files = true;
+option java_package = "com.lemmingtrip.models.v1";
+option swift_prefix = "LTModelsV1";
+
+enum GdprConsentType {
+  GDPR_CONSENT_TYPE_UNSPECIFIED = 0;
+  GDPR_CONSENT_TYPE_MARKETING = 1;
+  GDPR_CONSENT_TYPE_ANALYTICS = 2;
+  GDPR_CONSENT_TYPE_COOKIES = 3;
+  GDPR_CONSENT_TYPE_OTHER = 4;
+}
+
+message UserConsent {
+  string id = 1;
+  string user_id = 2;
+  GdprConsentType consent_type = 3;
+  bool is_granted = 4;
+  string granted_at = 5;
+  string revoked_at = 6;
+  string ip_address = 7;
+  string created_at = 8;
+}

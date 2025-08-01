@@ -1,0 +1,19 @@
+syntax = "proto3";
+
+package lemmingtrip.models.v1;
+
+option go_package = "github.com/lemming-trip/lemming-trip-proto/proto/lemmingtrip/models/v1;modelsv1";
+option java_multiple_files = true;
+option java_package = "com.lemmingtrip.models.v1";
+option swift_prefix = "LTModelsV1";
+
+message TripComment {
+  string id = 1;
+  string trip_id = 2;
+  string user_id = 3;
+  string parent_id = 4;
+  string text = 5;
+  string created_at = 6;
+  bool is_read = 7;
+  bool is_deleted = 8;
+}

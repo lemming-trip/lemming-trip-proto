@@ -1,0 +1,33 @@
+syntax = "proto3";
+
+package lemmingtrip.models.v1;
+
+option go_package = "github.com/lemming-trip/lemming-trip-proto/proto/lemmingtrip/models/v1;modelsv1";
+option java_multiple_files = true;
+option java_package = "com.lemmingtrip.models.v1";
+option swift_prefix = "LTModelsV1";
+
+enum SecurityEventType {
+  SECURITY_EVENT_TYPE_UNSPECIFIED = 0;
+  SECURITY_EVENT_TYPE_LOGIN = 1;
+  SECURITY_EVENT_TYPE_LOGOUT = 2;
+  SECURITY_EVENT_TYPE_PASSWORD_CHANGE = 3;
+  SECURITY_EVENT_TYPE_MFA_ENABLED = 4;
+}
+
+enum SecurityEventStatus {
+  SECURITY_EVENT_STATUS_UNSPECIFIED = 0;
+  SECURITY_EVENT_STATUS_SUCCESS = 1;
+  SECURITY_EVENT_STATUS_FAILURE = 2;
+}
+
+message SecurityAuditLog {
+  string id = 1;
+  string account_id = 2;
+  SecurityEventType event_type = 3;
+  SecurityEventStatus event_status = 4;
+  string ip_address = 5;
+  string user_agent = 6;
+  map<string, string> details = 7;
+  string created_at = 8;
+}

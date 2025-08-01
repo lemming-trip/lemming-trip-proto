@@ -1,0 +1,39 @@
+syntax = "proto3";
+
+package lemmingtrip.models.v1;
+
+option go_package = "github.com/lemming-trip/lemming-trip-proto/proto/lemmingtrip/models/v1;modelsv1";
+option java_multiple_files = true;
+option java_package = "com.lemmingtrip.models.v1";
+option swift_prefix = "LTModelsV1";
+
+enum TripType {
+  TRIP_TYPE_UNSPECIFIED = 0;
+  TRIP_TYPE_INDIVIDUAL = 1;
+  TRIP_TYPE_GROUP = 2;
+  TRIP_TYPE_NDIVIDUAL_OR_GROUP = 3;
+}
+
+enum TripSearchType {
+  TRIP_SEARCH_TYPE_UNSPECIFIED = 0;
+  TRIP_SEARCH_TYPE_TEAM = 1;
+  TRIP_SEARCH_TYPE_GUIDE = 2;
+  TRIP_SEARCH_TYPE_SPONSOR = 3;
+}
+
+message Trip {
+  string id = 1;
+  string user_id = 2;
+  string title = 3;
+  string text = 4;
+  string title_image = 5;
+  repeated string images = 6;
+  string video_link = 7;
+  string route = 8;
+  int32 rating = 9;
+  int32 likes = 10;
+  TripType trip_type = 11;
+  TripSearchType trip_search_type = 12;
+  string created_at = 13;
+  string updated_at = 14;
+}

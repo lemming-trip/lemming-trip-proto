@@ -1,0 +1,40 @@
+syntax = "proto3";
+package lemmingtrip.services.v1;
+
+import "lemmingtrip/models/v1/account.proto";
+
+option go_package = "github.com/lemming-trip/lemming-trip-proto/proto/lemmingtrip/services/v1;servicesv1";
+option java_multiple_files = true;
+option java_package = "com.lemmingtrip.services.v1";
+option swift_prefix = "LTServicesV1";
+
+service AccountService {
+  rpc CreateAccount(lemmingtrip.models.v1.Account) returns (lemmingtrip.models.v1.Account);
+  rpc GetAccount(GetAccountRequest) returns (lemmingtrip.models.v1.Account);
+  rpc UpdateAccount(lemmingtrip.models.v1.Account) returns (lemmingtrip.models.v1.Account);
+  rpc DeleteAccount(DeleteAccountRequest) returns (DeleteAccountResponse);
+  rpc ListAccounts(ListAccountsRequest) returns (ListAccountsResponse);
+}
+
+message GetAccountRequest {
+  string id = 1;
+}
+
+message DeleteAccountRequest {
+  string id = 1;
+}
+
+message DeleteAccountResponse {
+  bool success = 1;
+}
+
+message ListAccountsRequest {
+  int32 page = 1;
+  int32 page_size = 2;
+  string filter = 3;
+}
+
+message ListAccountsResponse {
+  repeated lemmingtrip.models.v1.Account accounts = 1;
+  int32 total = 2;
+}

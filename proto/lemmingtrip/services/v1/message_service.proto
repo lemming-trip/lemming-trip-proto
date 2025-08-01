@@ -1,0 +1,25 @@
+syntax = "proto3";
+package lemmingtrip.services.v1;
+
+import "lemmingtrip/models/v1/message.proto";
+
+option go_package = "github.com/lemming-trip/lemming-trip-proto/proto/lemmingtrip/services/v1;servicesv1";
+option java_multiple_files = true;
+option java_package = "com.lemmingtrip.services.v1";
+option swift_prefix = "LTServicesV1";
+
+service MessageService {
+  rpc SendMessage(lemmingtrip.models.v1.Message) returns (lemmingtrip.models.v1.Message);
+  rpc ListMessages(ListMessagesRequest) returns (ListMessagesResponse);
+}
+
+message ListMessagesRequest {
+  string user_id = 1;
+  int32 page = 2;
+  int32 page_size = 3;
+}
+
+message ListMessagesResponse {
+  repeated lemmingtrip.models.v1.Message messages = 1;
+  int32 total = 2;
+}

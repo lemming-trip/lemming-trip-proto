@@ -1,4 +1,5 @@
 syntax = "proto3";
+
 package lemmingtrip.models.v1;
 
 option go_package = "github.com/lemming-trip/lemming-trip-proto/proto/lemmingtrip/models/v1;modelsv1";
@@ -6,10 +7,14 @@ option java_multiple_files = true;
 option java_package = "com.lemmingtrip.models.v1";
 option swift_prefix = "LTModelsV1";
 
-message CreateUserResponse {
-  int64 id = 1;
-  string name = 2;
-  string email = 3;
+message OAuthToken {
+  string id = 1;
+  string account_id = 2;
+  string access_token = 3;
+  string refresh_token = 4;
+  string token_type = 5;
+  repeated string scope = 6;
+  string expires_at = 7;
+  string created_at = 8;
+  string revoked_at = 9;
 }
-
-message CreateUserRequest {}

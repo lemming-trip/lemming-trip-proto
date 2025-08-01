@@ -1,0 +1,27 @@
+syntax = "proto3";
+package lemmingtrip.services.v1;
+
+import "lemmingtrip/models/v1/gdpr.proto";
+
+option go_package = "github.com/lemming-trip/lemming-trip-proto/proto/lemmingtrip/services/v1;servicesv1";
+option java_multiple_files = true;
+option java_package = "com.lemmingtrip.services.v1";
+option swift_prefix = "LTServicesV1";
+
+service GdprService {
+  rpc ListConsents(ListConsentsRequest) returns (ListConsentsResponse);
+  rpc GrantConsent(lemmingtrip.models.v1.UserConsent) returns (lemmingtrip.models.v1.UserConsent);
+  rpc RevokeConsent(RevokeConsentRequest) returns (lemmingtrip.models.v1.UserConsent);
+}
+
+message ListConsentsRequest {
+  string user_id = 1;
+}
+
+message ListConsentsResponse {
+  repeated lemmingtrip.models.v1.UserConsent consents = 1;
+}
+
+message RevokeConsentRequest {
+  string consent_id = 1;
+}

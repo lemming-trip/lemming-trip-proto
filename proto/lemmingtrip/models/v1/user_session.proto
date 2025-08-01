@@ -1,0 +1,21 @@
+syntax = "proto3";
+
+package lemmingtrip.models.v1;
+
+option go_package = "github.com/lemming-trip/lemming-trip-proto/proto/lemmingtrip/models/v1;modelsv1";
+option java_multiple_files = true;
+option java_package = "com.lemmingtrip.models.v1";
+option swift_prefix = "LTModelsV1";
+
+message UserSession {
+  string id = 1;
+  string account_id = 2;
+  string session_token = 3;
+  string ip_address = 4;
+  string user_agent = 5;
+  string device_info = 6; // JSON string
+  string expires_at = 7;
+  string last_activity = 8;
+  string created_at = 9;
+  string revoked_at = 10;
+}

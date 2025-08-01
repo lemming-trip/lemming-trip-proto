@@ -1,0 +1,24 @@
+syntax = "proto3";
+package lemmingtrip.services.v1;
+
+import "lemmingtrip/models/v1/audit.proto";
+
+option go_package = "github.com/lemming-trip/lemming-trip-proto/proto/lemmingtrip/services/v1;servicesv1";
+option java_multiple_files = true;
+option java_package = "com.lemmingtrip.services.v1";
+option swift_prefix = "LTServicesV1";
+
+service AuditService {
+  rpc ListSecurityEvents(ListSecurityEventsRequest) returns (ListSecurityEventsResponse);
+}
+
+message ListSecurityEventsRequest {
+  string account_id = 1;
+  int32 page = 2;
+  int32 page_size = 3;
+}
+
+message ListSecurityEventsResponse {
+  repeated lemmingtrip.models.v1.SecurityAuditLog events = 1;
+  int32 total = 2;
+}

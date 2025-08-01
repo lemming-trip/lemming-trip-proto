@@ -1,0 +1,40 @@
+syntax = "proto3";
+package lemmingtrip.services.v1;
+
+import "lemmingtrip/models/v1/user.proto";
+
+option go_package = "github.com/lemming-trip/lemming-trip-proto/proto/lemmingtrip/services/v1;servicesv1";
+option java_multiple_files = true;
+option java_package = "com.lemmingtrip.services.v1";
+option swift_prefix = "LTServicesV1";
+
+service UserService {
+  rpc CreateUser(lemmingtrip.models.v1.User) returns (lemmingtrip.models.v1.User);
+  rpc GetUser(GetUserRequest) returns (lemmingtrip.models.v1.User);
+  rpc UpdateUser(lemmingtrip.models.v1.User) returns (lemmingtrip.models.v1.User);
+  rpc DeleteUser(DeleteUserRequest) returns (DeleteUserResponse);
+  rpc ListUsers(ListUsersRequest) returns (ListUsersResponse);
+}
+
+message GetUserRequest {
+  string id = 1;
+}
+
+message DeleteUserRequest {
+  string id = 1;
+}
+
+message DeleteUserResponse {
+  bool success = 1;
+}
+
+message ListUsersRequest {
+  int32 page = 1;
+  int32 page_size = 2;
+  string filter = 3;
+}
+
+message ListUsersResponse {
+  repeated lemmingtrip.models.v1.User users = 1;
+  int32 total = 2;
+}

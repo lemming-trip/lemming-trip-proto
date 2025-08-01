@@ -1,0 +1,48 @@
+syntax = "proto3";
+
+package lemmingtrip.models.v1;
+
+option go_package = "github.com/lemming-trip/lemming-trip-proto/proto/lemmingtrip/models/v1;modelsv1";
+option java_multiple_files = true;
+option java_package = "com.lemmingtrip.models.v1";
+option swift_prefix = "LTModelsV1";
+
+enum UserRole {
+  USER_ROLE_UNSPECIFIED = 0;
+  USER_ROLE_TOURIST = 1;
+  USER_ROLE_GUIDE = 2;
+  USER_ROLE_ADMINISTRATOR = 3;
+}
+
+message PrivacySettings {
+  bool profile_visible = 1;
+  bool email_visible = 2;
+}
+
+message UserPreferences {
+  map<string, string> preferences = 1;
+}
+
+message User {
+  string id = 1;
+  string email = 2;
+  bool is_active = 3;
+  UserRole user_role = 4;
+  string avatar = 5;
+  string phone = 6;
+  string city = 7;
+  string address = 8;
+  string first_name = 9;
+  string last_name = 10;
+  string middle_name = 11;
+  string date_birth = 12;
+  string description = 13;
+  PrivacySettings privacy_settings = 14;
+  UserPreferences preferences = 15;
+  bool ban = 16;
+  string ban_reason = 17;
+  string created_at = 18;
+  string updated_at = 19;
+  string last_seen_at = 20;
+  string ban_at = 21;
+}
