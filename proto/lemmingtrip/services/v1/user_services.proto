@@ -9,32 +9,21 @@ option java_package = "com.lemmingtrip.services.v1";
 option swift_prefix = "LTServicesV1";
 
 service UserService {
-  rpc CreateUser(lemmingtrip.models.v1.User) returns (lemmingtrip.models.v1.User);
-  rpc GetUser(GetUserRequest) returns (lemmingtrip.models.v1.User);
-  rpc UpdateUser(lemmingtrip.models.v1.User) returns (lemmingtrip.models.v1.User);
-  rpc DeleteUser(DeleteUserRequest) returns (DeleteUserResponse);
-  rpc ListUsers(ListUsersRequest) returns (ListUsersResponse);
-}
+  rpc CreateUser(lemmingtrip.models.v1.CreateUserRequest) returns (lemmingtrip.models.v1.CreateUserResponse);
+  rpc GetUser(lemmingtrip.models.v1.GetUserRequest) returns (lemmingtrip.models.v1.GetUserResponse);
+  rpc UpdateUser(lemmingtrip.models.v1.UpdateUserRequest) returns (lemmingtrip.models.v1.UpdateUserResponse);
+  rpc DeleteUser(lemmingtrip.models.v1.DeleteUserRequest) returns (lemmingtrip.models.v1.DeleteUserResponse);
+  rpc RestoreUser(lemmingtrip.models.v1.RestoreUserRequest) returns (lemmingtrip.models.v1.RestoreUserResponse);
 
-message GetUserRequest {
-  string id = 1;
-}
+  rpc ChangeEmail(lemmingtrip.models.v1.ChangeEmailRequest) returns (lemmingtrip.models.v1.ChangeEmailResponse);
+  rpc ChangeRole(lemmingtrip.models.v1.ChangeRoleRequest) returns (lemmingtrip.models.v1.ChangeRoleResponse);
 
-message DeleteUserRequest {
-  string id = 1;
-}
+  rpc BanUser(lemmingtrip.models.v1.BanUserRequest) returns (lemmingtrip.models.v1.BanUserResponse);
+  rpc UnbanUser(lemmingtrip.models.v1.UnbanUserRequest) returns (lemmingtrip.models.v1.UnbanUserResponse);
 
-message DeleteUserResponse {
-  bool success = 1;
-}
+  rpc UpdatePrivacy(lemmingtrip.models.v1.UpdatePrivacyRequest) returns (lemmingtrip.models.v1.UpdatePrivacyResponse);
 
-message ListUsersRequest {
-  int32 page = 1;
-  int32 page_size = 2;
-  string filter = 3;
-}
+  rpc ListUsers(lemmingtrip.models.v1.ListUsersRequest) returns (lemmingtrip.models.v1.ListUsersResponse);
 
-message ListUsersResponse {
-  repeated lemmingtrip.models.v1.User users = 1;
-  int32 total = 2;
+  rpc GetUserStats(lemmingtrip.models.v1.GetUserStatsRequest) returns (lemmingtrip.models.v1.GetUserStatsResponse);
 }
