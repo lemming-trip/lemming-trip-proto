@@ -25,9 +25,6 @@ message OAuthToken {
   google.protobuf.Timestamp expires_at = 9; // Timestamp indicating when the access token expires, used to determine if the token is still valid for making requests.
   google.protobuf.Timestamp created_at = 10; // Timestamp indicating when the token was created, useful for auditing and record-keeping.
   google.protobuf.Timestamp revoked_at = 11; // Timestamp indicating when the token was revoked, if applicable. This is used to track when the token is no longer valid.
-  string ip_address = 13; // IP address from which the token was created or used, useful for security and auditing purposes.
-  string user_agent = 14; // User agent string from the client that created the token, providing context about the device or application used.
-  map<string, string> metadata = 15; // Additional metadata associated with the token, allowing for flexible storage of extra information such as device details or session context.
 }
 
 // CreateTokenRequest is used to create a new OAuth token.
