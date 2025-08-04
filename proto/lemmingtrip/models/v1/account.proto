@@ -2,45 +2,192 @@ syntax = "proto3";
 
 package lemmingtrip.models.v1;
 
+import "google/protobuf/timestamp.proto";
+
 option go_package = "github.com/lemming-trip/lemming-trip-proto/proto/lemmingtrip/models/v1;modelsv1";
 option java_multiple_files = true;
 option java_package = "com.lemmingtrip.models.v1";
 option swift_prefix = "LTModelsV1";
 
+// AccountProvider defines the different providers for user accounts.
+// This enum is used to identify the source of the account, such as local, Google,
+// Facebook, etc. It is used in the Account message to specify how the user authenticated.
 enum AccountProvider {
-  ACCOUNT_PROVIDER_UNSPECIFIED = 0;
-  ACCOUNT_PROVIDER_LOCAL = 1;
-  ACCOUNT_PROVIDER_GOOGLE = 2;
-  ACCOUNT_PROVIDER_FACEBOOK = 3;
-  ACCOUNT_PROVIDER_MICROSOFT = 4;
-  ACCOUNT_PROVIDER_APPLE = 5;
-  ACCOUNT_PROVIDER_GITHUB = 6;
-  ACCOUNT_PROVIDER_DISCORD = 7;
-  ACCOUNT_PROVIDER_TELEGRAM = 8;
-  ACCOUNT_PROVIDER_LINKEDIN = 9;
-  ACCOUNT_PROVIDER_TWITTER = 10;
-  ACCOUNT_PROVIDER_YANDEX = 11;
+  ACCOUNT_PROVIDER_UNSPECIFIED = 0; // Default value, should not be used in practice.
+  ACCOUNT_PROVIDER_LOCAL = 1; // Local accounts managed by the application.
+  ACCOUNT_PROVIDER_GOOGLE = 2; // Google accounts for authentication.
+  ACCOUNT_PROVIDER_FACEBOOK = 3; // Facebook accounts for authentication.
+  ACCOUNT_PROVIDER_MICROSOFT = 4; // Microsoft accounts for authentication.
+  ACCOUNT_PROVIDER_APPLE = 5; // Apple accounts for authentication.
+  ACCOUNT_PROVIDER_GITHUB = 6; // GitHub accounts for authentication.
+  ACCOUNT_PROVIDER_DISCORD = 7; // Discord accounts for authentication.
+  ACCOUNT_PROVIDER_TELEGRAM = 8; // Telegram accounts for authentication.
+  ACCOUNT_PROVIDER_LINKEDIN = 9; // LinkedIn accounts for authentication.
+  ACCOUNT_PROVIDER_TWITTER = 10; // Twitter accounts for authentication.
+  ACCOUNT_PROVIDER_YANDEX = 11; // Yandex accounts for authentication.
 }
 
+// Account represents a user account in the system.
+// It contains all necessary fields for user authentication and account management.
+// The fields include identifiers for the user, provider information, security details,
+// and timestamps for various account events.
 message Account {
-  string id = 1;
-  string user_id = 2;
-  AccountProvider account_provider = 3;
-  string provider_user_id = 4;
-  string provider_email = 5;
-  string password_hash = 6;
-  string password_salt = 7;
-  string activation_code = 8;
-  string activation_expires_at = 9;
-  bool is_verified = 10;
-  string verified_at = 11;
-  bool mfa_enabled = 12;
-  string mfa_secret = 13;
-  repeated string mfa_backup_codes = 14;
-  int32 failed_login_attempts = 15;
-  string locked_until = 16;
-  string last_login_at = 17;
-  string last_login_ip = 18;
-  string created_at = 19;
-  string updated_at = 20;
+  string id = 1; // Unique identifier for the account, typically a UUID.
+  string user_id = 2; // Identifier for the associated user, linking to the User message.
+  AccountProvider account_provider = 3; // The provider through which the account was created or authenticated.
+  string provider_user_id = 4; // Unique identifier for the user in the provider's system, if applicable.
+  string provider_email = 5; // Email address associated with the account in the provider's system.
+  string password_hash = 6; // Hashed password for local accounts, used for authentication.
+  string password_salt = 7; // Salt used for hashing the password, enhancing security against rainbow table attacks.
+  string activation_code = 8; // Code used for account activation, typically sent via email.
+  google.protobuf.Timestamp activation_expires_at = 9; // Timestamp indicating when the activation code expires, used to prevent stale activations.
+  bool is_verified = 10; // Indicates whether the account has been verified, typically after email confirmation.
+  google.protobuf.Timestamp verified_at = 11; // Timestamp indicating when the account was verified, useful for tracking verification history.
+  bool mfa_enabled = 12; // Indicates whether multi-factor authentication (MFA) is enabled for the account, enhancing security.
+  string mfa_secret = 13; // Secret key used for multi-factor authentication, typically a TOTP secret.
+  repeated string mfa_backup_codes = 14; // Backup codes for MFA, used as a fallback method for authentication if the primary method fails.
+  int32 failed_login_attempts = 15; // Number of consecutive failed login attempts, used for security measures like account locking.
+  string locked_until = 16; // Timestamp indicating until when the account is locked due to too many failed login attempts, preventing brute-force attacks.
+  google.protobuf.Timestamp last_login_at = 17; // Timestamp of the last successful login, useful for tracking user activity and security audits.
+  string last_login_ip = 18; // IP address of the last successful login, used for security monitoring and anomaly detection.
+  google.protobuf.Timestamp created_at = 19; // Timestamp indicating when the account was created, useful for auditing and user management.
+  google.protobuf.Timestamp updated_at = 20; // Timestamp indicating when the account was last updated, useful for tracking changes to the account.
+}
+
+// Request and response messages for account creation.
+message CreateAccountRequest {
+  lemmingtrip.models.v1.Account account = 1; // The account details to create, including all necessary fields for the account.
+}
+
+// Response message for CreateAccountRequest.
+message CreateAccountResponse {
+  lemmingtrip.models.v1.Account account = 1; // The created account details after the operation, including any generated fields like ID and timestamps.
+}
+
+// Request and response messages for account service operations.
+message GetAccountRequest {
+  string id = 1; // Unique identifier of the account to retrieve.
+}
+
+// Response message for GetAccountRequest.
+message GetAccountResponse {
+  Account account = 1; // The retrieved account details.
+}
+
+// Request and response messages for account creation.
+message UpdateAccountRequest {
+  Account account = 1; // The account details to update, including all fields that can be modified.
+}
+
+// Response message for UpdateAccountRequest.
+message UpdateAccountResponse {
+  Account account = 1; // The updated account details after the operation.
+}
+
+// Request and response messages for account deletion.
+message DeleteAccountRequest {
+  string id = 1; // Unique identifier of the account to delete.
+}
+
+// Response message for DeleteAccountRequest.
+message DeleteAccountResponse {
+  bool success = 1; // Indicates whether the account deletion was successful.
+}
+
+// Request and response messages for listing accounts.
+message ListAccountsRequest {
+  int32 take = 1; // Number of accounts to retrieve, used for pagination.
+  int32 skip = 2; // Number of accounts to skip, used for pagination.
+  string filter = 3; // Filter criteria for listing accounts, e.g., by provider or status.
+  string sort_by = 4; // Field to sort by, e.g., "created_at", "updated_at".
+  bool desc = 5; // Whether to sort in descending order.
+}
+
+// Response message for ListAccountsRequest.
+message ListAccountsResponse {
+  repeated Account accounts = 1; // List of accounts matching the request criteria.
+  int32 total = 2; // Total number of accounts matching the request criteria, used for pagination.
+}
+
+// Request and response messages for account activation.
+message ActivateAccountRequest {
+  string activation_code = 1; // Activation code sent to the user, typically via email.
+}
+
+// Response message for ActivateAccountRequest.
+message ActivateAccountResponse {
+  lemmingtrip.models.v1.Account account = 1; // The activated account details after the operation, including any updated fields like is_verified and verified_at.
+}
+
+// Request and response messages for email verification.
+message VerifyEmailRequest {
+  string id = 1; // Unique identifier of the account to verify.
+  string email_code = 2; // Verification code sent to the user's email, used to confirm ownership of the email address.
+  string email = 3; // Email address to verify, used to ensure the correct account is being verified.
+}
+
+// Response message for VerifyEmailRequest.
+message VerifyEmailResponse {
+  bool success = 1; // Indicates whether the email verification was successful.
+}
+
+// Request and response messages for password reset.
+message ResetPasswordRequest {
+  string email = 1; // Email address associated with the account for which the password is being reset.
+}
+
+// Response message for ResetPasswordRequest.
+message ResetPasswordResponse {
+  bool success = 1; // Indicates whether the password reset request was successful, typically after sending a reset link or code to the email.
+}
+
+// Request and response messages for enabling multi-factor authentication (MFA).
+message EnableMFARequest {
+  string id = 1; // Unique identifier of the account for which MFA is being enabled.
+}
+
+// Response message for EnableMFARequest.
+message EnableMFAResponse {
+  bool success = 1; // Indicates whether MFA was successfully enabled for the account.
+}
+
+// Request and response messages for disabling multi-factor authentication (MFA).
+message DisableMFARequest {
+  string id = 1; // Unique identifier of the account for which MFA is being disabled.
+}
+
+// Response message for DisableMFARequest.
+message DisableMFAResponse {
+  bool success = 1; // Indicates whether MFA was successfully disabled for the account.
+}
+
+// Request and response messages for locking an account.
+message BanAccountRequest {
+  string id = 1; // Unique identifier of the account to ban.
+  string reason = 2; // Reason for banning the account, e.g., too many failed login attempts or suspicious activity.
+}
+
+// Response message for BanAccountRequest.
+message BanAccountResponse {
+  bool success = 1; // Indicates whether the account was successfully banned.
+}
+
+// Request and response messages for unlocking an account.
+message UnbanAccountRequest {
+  string id = 1; // Unique identifier of the account to unban.
+}
+
+// Response message for UnbanAccountRequest.
+message UnbanAccountResponse {
+  bool success = 1; // Indicates whether the account was successfully unbanned.
+}
+
+// Request and response messages for listing user accounts.
+message ListUserAccountsRequest {
+  string user_id = 1; // Unique identifier of the user whose accounts are being listed.
+}
+
+// Response message for ListUserAccountsRequest.
+message ListUserAccountsResponse {
+  repeated Account accounts = 1; // List of accounts associated with the specified user.
 }

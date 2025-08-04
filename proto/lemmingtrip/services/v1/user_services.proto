@@ -8,22 +8,35 @@ option java_multiple_files = true;
 option java_package = "com.lemmingtrip.services.v1";
 option swift_prefix = "LTServicesV1";
 
+// UserService provides methods for managing user accounts.
+// It includes operations for creating, retrieving, updating, deleting users,
+// and managing user roles and privacy settings. The service also supports user
+// statistics and user banning functionalities.
+// Each method corresponds to a specific user management operation and returns
+// appropriate response messages defined in the models package.
 service UserService {
+  // User management methods
   rpc CreateUser(lemmingtrip.models.v1.CreateUserRequest) returns (lemmingtrip.models.v1.CreateUserResponse);
+  // User retrieval and update methods
   rpc GetUser(lemmingtrip.models.v1.GetUserRequest) returns (lemmingtrip.models.v1.GetUserResponse);
+  // User deletion and restoration methods
   rpc UpdateUser(lemmingtrip.models.v1.UpdateUserRequest) returns (lemmingtrip.models.v1.UpdateUserResponse);
+  // User deletion and restoration methods
   rpc DeleteUser(lemmingtrip.models.v1.DeleteUserRequest) returns (lemmingtrip.models.v1.DeleteUserResponse);
+  // User role and privacy management methods
   rpc RestoreUser(lemmingtrip.models.v1.RestoreUserRequest) returns (lemmingtrip.models.v1.RestoreUserResponse);
-
+  // User role management methods
   rpc ChangeEmail(lemmingtrip.models.v1.ChangeEmailRequest) returns (lemmingtrip.models.v1.ChangeEmailResponse);
+  // User role management methods
   rpc ChangeRole(lemmingtrip.models.v1.ChangeRoleRequest) returns (lemmingtrip.models.v1.ChangeRoleResponse);
-
+  // User privacy management methods
   rpc BanUser(lemmingtrip.models.v1.BanUserRequest) returns (lemmingtrip.models.v1.BanUserResponse);
+  // User privacy management methods
   rpc UnbanUser(lemmingtrip.models.v1.UnbanUserRequest) returns (lemmingtrip.models.v1.UnbanUserResponse);
-
+  // User privacy management methods
   rpc UpdatePrivacy(lemmingtrip.models.v1.UpdatePrivacyRequest) returns (lemmingtrip.models.v1.UpdatePrivacyResponse);
-
+  // User statistics retrieval methods
   rpc ListUsers(lemmingtrip.models.v1.ListUsersRequest) returns (lemmingtrip.models.v1.ListUsersResponse);
-
+  // User statistics retrieval methods
   rpc GetUserStats(lemmingtrip.models.v1.GetUserStatsRequest) returns (lemmingtrip.models.v1.GetUserStatsResponse);
 }
