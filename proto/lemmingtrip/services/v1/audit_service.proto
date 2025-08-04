@@ -8,17 +8,19 @@ option java_multiple_files = true;
 option java_package = "com.lemmingtrip.services.v1";
 option swift_prefix = "LTServicesV1";
 
+// AuditService provides methods for managing security audit logs.
 service AuditService {
-  rpc ListSecurityEvents(ListSecurityEventsRequest) returns (ListSecurityEventsResponse);
-}
+  rpc ListSecurityEvents(lemmingtrip.models.v1.ListSecurityEventsRequest) returns (lemmingtrip.models.v1.ListSecurityEventsResponse);
 
-message ListSecurityEventsRequest {
-  string account_id = 1;
-  int32 page = 2;
-  int32 page_size = 3;
-}
+  // Create a new security event
+  rpc CreateSecurityEvent(lemmingtrip.models.v1.CreateSecurityEventRequest) returns (lemmingtrip.models.v1.CreateSecurityEventResponse);
 
-message ListSecurityEventsResponse {
-  repeated lemmingtrip.models.v1.SecurityAuditLog events = 1;
-  int32 total = 2;
+  // Get a specific security event by ID
+  rpc GetSecurityEvent(lemmingtrip.models.v1.GetSecurityEventRequest) returns (lemmingtrip.models.v1.GetSecurityEventResponse);
+
+  // Delete a security event by ID
+  rpc DeleteSecurityEvent(lemmingtrip.models.v1.DeleteSecurityEventRequest) returns (lemmingtrip.models.v1.DeleteSecurityEventResponse);
+
+  // Export security events based on criteria
+  rpc ExportSecurityEvents(lemmingtrip.models.v1.ExportSecurityEventsRequest) returns (lemmingtrip.models.v1.ExportSecurityEventsResponse);
 }

@@ -7,27 +7,85 @@ option java_multiple_files = true;
 option java_package = "com.lemmingtrip.models.v1";
 option swift_prefix = "LTModelsV1";
 
+// SecurityEventType defines the type of security event.
 enum SecurityEventType {
-  SECURITY_EVENT_TYPE_UNSPECIFIED = 0;
-  SECURITY_EVENT_TYPE_LOGIN = 1;
-  SECURITY_EVENT_TYPE_LOGOUT = 2;
-  SECURITY_EVENT_TYPE_PASSWORD_CHANGE = 3;
-  SECURITY_EVENT_TYPE_MFA_ENABLED = 4;
+  SECURITY_EVENT_TYPE_UNSPECIFIED = 0; // Default value, should not be used.
+  SECURITY_EVENT_TYPE_LOGIN = 1; // Login event, when a user logs into their account.
+  SECURITY_EVENT_TYPE_LOGOUT = 2; // Logout event, when a user logs out of their account.
+  SECURITY_EVENT_TYPE_PASSWORD_CHANGE = 3; // Password change event, when a user changes their account password.
+  SECURITY_EVENT_TYPE_MFA_ENABLED = 4; // Multi-factor authentication enabled event, when a user enables MFA on their account.
 }
 
+// SecurityEventStatus defines the status of a security event.
 enum SecurityEventStatus {
-  SECURITY_EVENT_STATUS_UNSPECIFIED = 0;
-  SECURITY_EVENT_STATUS_SUCCESS = 1;
-  SECURITY_EVENT_STATUS_FAILURE = 2;
+  SECURITY_EVENT_STATUS_UNSPECIFIED = 0; // Default value, should not be used.
+  SECURITY_EVENT_STATUS_SUCCESS = 1; // Success status, indicating the event was successful.
+  SECURITY_EVENT_STATUS_FAILURE = 2; // Failure status, indicating the event failed.
 }
 
+// SecurityAuditLog represents a security audit log entry.
 message SecurityAuditLog {
-  string id = 1;
-  string account_id = 2;
-  SecurityEventType event_type = 3;
-  SecurityEventStatus event_status = 4;
-  string ip_address = 5;
-  string user_agent = 6;
-  map<string, string> details = 7;
-  string created_at = 8;
+  string id = 1; // Unique identifier for the security audit log entry.
+  string account_id = 2; // ID of the account associated with the security event.
+  SecurityEventType event_type = 3; // Type of the security event.
+  SecurityEventStatus event_status = 4; // Status of the security event.
+  string ip_address = 5; // IP address from which the event originated.
+  string user_agent = 6; // User agent string of the client that triggered the event.
+  map<string, string> details = 7; // Additional details about the security event, stored as key-value pairs.
+  string created_at = 8; // Timestamp of when the security event occurred, in ISO 8601 format.
+}
+
+// ListSecurityEventsRequest represents a request to list security events.
+message ListSecurityEventsRequest {
+  string account_id = 1; // ID of the account for which to list security events.
+  int32 take = 2; // Number of security events to return in the response.
+  int32 skip = 3; // Number of security events to skip in the response.
+  string sort_by = 4; // Field by which to sort the security events, e.g., "created_at".
+  string sort_order = 5; // Order of sorting, either "asc" for ascending or "desc" for descending.
+  string filter = 6; // Filter criteria for the security events, e.g., "event_type=LOGIN".
+}
+
+// ListSecurityEventsResponse represents a response containing a list of security events.
+message ListSecurityEventsResponse {
+  repeated SecurityAuditLog events = 1; // List of security audit logs matching the request criteria.
+  int32 total = 2; // Total number of security events matching the request criteria, regardless of pagination.
+}
+
+// CreateSecurityEventRequest represents a request to create a new security event.
+message CreateSecurityEventRequest {
+  SecurityAuditLog event = 1; // The security audit log entry to be created.
+}
+message CreateSecurityEventResponse {
+  SecurityAuditLog event = 1; // The created security audit log entry.
+}
+
+// GetSecurityEventRequest represents a request to retrieve a security event by its ID.
+message GetSecurityEventRequest {
+  string id = 1; // ID of the security event to retrieve.
+}
+
+// GetSecurityEventResponse represents a response containing a security event.
+message GetSecurityEventResponse {
+  SecurityAuditLog event = 1; // The security audit log entry retrieved by ID.
+}
+
+// DeleteSecurityEventRequest represents a request to delete a security event by its ID.
+message DeleteSecurityEventRequest {
+  string id = 1; // ID of the security event to delete.
+}
+
+// DeleteSecurityEventResponse represents a response to a delete security event request.
+message DeleteSecurityEventResponse {
+  bool success = 1; // Indicates whether the deletion was successful.
+}
+
+message ExportSecurityEventsRequest {
+  string filter = 1; // Filter criteria for the security events, e.g., "event_type=LOGIN".
+  string format = 2; // "csv", "json", etc.
+}
+
+// ExportSecurityEventsResponse represents a response containing exported security events.
+message ExportSecurityEventsResponse {
+  bytes file = 1; // The exported file containing security events in the specified format.
+  string filename = 2; // Name of the exported file, e.g., "security_events.csv".
 }
