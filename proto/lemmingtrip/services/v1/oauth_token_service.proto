@@ -8,32 +8,25 @@ option java_multiple_files = true;
 option java_package = "com.lemmingtrip.services.v1";
 option swift_prefix = "LTServicesV1";
 
+// OAuthTokensService provides methods for managing OAuth tokens, including creation, retrieval, refreshing, validation, and revocation.
+// It allows clients to securely manage access tokens for user authentication and authorization.
 service OAuthTokensService {
-  rpc CreateToken(lemmingtrip.models.v1.OAuthToken) returns (lemmingtrip.models.v1.OAuthToken);
-  rpc GetToken(GetTokenRequest) returns (lemmingtrip.models.v1.OAuthToken);
-  rpc RevokeToken(RevokeTokenRequest) returns (RevokeTokenResponse);
-  rpc ListTokens(ListTokensRequest) returns (ListTokensResponse);
-}
-
-message GetTokenRequest {
-  string id = 1;
-}
-
-message RevokeTokenRequest {
-  string id = 1;
-}
-
-message RevokeTokenResponse {
-  bool success = 1;
-}
-
-message ListTokensRequest {
-  string account_id = 1;
-  int32 page = 2;
-  int32 page_size = 3;
-}
-
-message ListTokensResponse {
-  repeated lemmingtrip.models.v1.OAuthToken tokens = 1;
-  int32 total = 2;
+  // CreateToken creates a new OAuth token for a user, client, and requested scopes.
+  rpc CreateToken(lemmingtrip.models.v1.CreateTokenRequest) returns (lemmingtrip.models.v1.CreateTokenResponse);
+  // GetToken retrieves an OAuth token by its ID.
+  rpc GetToken(lemmingtrip.models.v1.GetTokenRequest) returns (lemmingtrip.models.v1.GetTokenResponse);
+  // RefreshToken requests a new access token using a refresh token.
+  rpc RefreshToken(lemmingtrip.models.v1.RefreshTokenRequest) returns (lemmingtrip.models.v1.RefreshTokenResponse);
+  // ValidateToken checks if an access token is valid and returns the token details if valid.
+  rpc ValidateToken(lemmingtrip.models.v1.ValidateTokenRequest) returns (lemmingtrip.models.v1.ValidateTokenResponse);
+  // RevokeToken revokes a specific OAuth token by its ID, making it no longer valid for use.
+  rpc RevokeToken(lemmingtrip.models.v1.RevokeTokenRequest) returns (lemmingtrip.models.v1.RevokeTokenResponse);
+  // RevokeAllTokens revokes all tokens associated with a specific user and client, ensuring that all sessions are invalidated.
+  rpc RevokeAllTokens(lemmingtrip.models.v1.RevokeAllTokensRequest) returns (lemmingtrip.models.v1.RevokeAllTokensResponse);
+  // ListTokens retrieves a list of OAuth tokens with pagination and filtering options.
+  rpc ListTokens(lemmingtrip.models.v1.ListTokensRequest) returns (lemmingtrip.models.v1.ListTokensResponse);
+  // ListUserTokens retrieves a list of OAuth tokens for a specific user with pagination options.
+  rpc ListUserTokens(lemmingtrip.models.v1.ListUserTokensRequest) returns (lemmingtrip.models.v1.ListUserTokensResponse);
+  // GetActiveTokens retrieves all active tokens for a specific user, allowing clients to manage user sessions effectively.
+  rpc GetActiveTokens(lemmingtrip.models.v1.GetActiveTokensRequest) returns (lemmingtrip.models.v1.GetActiveTokensResponse);
 }

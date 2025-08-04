@@ -2,19 +2,135 @@ syntax = "proto3";
 
 package lemmingtrip.models.v1;
 
+import "google/protobuf/timestamp.proto";
+
 option go_package = "github.com/lemming-trip/lemming-trip-proto/proto/lemmingtrip/models/v1;modelsv1";
 option java_multiple_files = true;
 option java_package = "com.lemmingtrip.models.v1";
 option swift_prefix = "LTModelsV1";
 
+// OAuthToken represents an OAuth token used for authentication and authorization.
+// It includes details such as the token ID, associated account and user IDs, client ID,
+// access and refresh tokens, token type, scopes, expiration timestamps, and metadata.
+// The token can be used to access protected resources and perform actions on behalf of the user.
 message OAuthToken {
-  string id = 1;
-  string account_id = 2;
-  string access_token = 3;
-  string refresh_token = 4;
-  string token_type = 5;
-  repeated string scope = 6;
-  string expires_at = 7;
-  string created_at = 8;
-  string revoked_at = 9;
+  string id = 1; // Unique identifier for the OAuth token, typically a UUID.
+  string account_id = 2; // Identifier for the account associated with the token, linking to the Account message.
+  string user_id = 3; // Identifier for the user associated with the token, linking to the User message.
+  string client_id = 4; // Identifier for the client application that requested the token, linking to the Client message.
+  string access_token = 5; // The access token used for authenticating API requests, typically a JWT or opaque token.
+  string refresh_token = 6; // The refresh token used to obtain a new access token when the current one expires, enhancing security and usability.
+  string token_type = 7; // The type of token, such as "Bearer", indicating how the token should be used in HTTP headers.
+  repeated string scope = 8; // The scopes associated with the token, defining the permissions granted to the token holder, such as read or write access to specific resources.
+  google.protobuf.Timestamp expires_at = 9; // Timestamp indicating when the access token expires, used to determine if the token is still valid for making requests.
+  google.protobuf.Timestamp created_at = 10; // Timestamp indicating when the token was created, useful for auditing and record-keeping.
+  google.protobuf.Timestamp revoked_at = 11; // Timestamp indicating when the token was revoked, if applicable. This is used to track when the token is no longer valid.
+  string ip_address = 13; // IP address from which the token was created or used, useful for security and auditing purposes.
+  string user_agent = 14; // User agent string from the client that created the token, providing context about the device or application used.
+  map<string, string> metadata = 15; // Additional metadata associated with the token, allowing for flexible storage of extra information such as device details or session context.
+}
+
+// CreateTokenRequest is used to create a new OAuth token.
+// It includes the account ID, user ID, client ID, requested scopes, and metadata such as IP address and user agent.
+message CreateTokenRequest {
+  string account_id = 1; // Identifier for the account associated with the token, linking to the Account message.
+  string user_id = 2; // Identifier for the user associated with the token, linking to the User message.
+  string client_id = 3; // Identifier for the client application that requested the token, linking to the Client message.
+  repeated string scope = 4; // The scopes requested for the token, defining the permissions granted to the token holder.
+  string ip_address = 5; // IP address from which the token is being created, useful for security and auditing purposes.
+  string user_agent = 6; // User agent string from the client that is creating the token, providing context about the device or application used.
+}
+
+// CreateTokenResponse is used to return the newly created OAuth token.
+message CreateTokenResponse {
+  lemmingtrip.models.v1.OAuthToken token = 1; // The newly created OAuth token, represented by an OAuthToken message.
+}
+
+// GetTokenRequest is used to retrieve a specific OAuth token by its ID.
+message GetTokenRequest {
+  string id = 1; // Identifier for the token to retrieve, linking to the OAuthToken message.
+}
+
+// GetTokenResponse is used to return the OAuth token that matches the requested ID.
+message GetTokenResponse {
+  lemmingtrip.models.v1.OAuthToken token = 1; // The OAuth token that matches the requested ID, represented by an OAuthToken message.
+}
+
+// RefreshTokenRequest is used to request a new access token using a refresh token.
+message RefreshTokenRequest {
+  string refresh_token = 1; // The refresh token used to obtain a new access token, typically provided by the client application.
+}
+
+// RefreshTokenResponse is used to return the new access token after refreshing.
+message RefreshTokenResponse {
+  lemmingtrip.models.v1.OAuthToken token = 1; // The new OAuth token after refreshing, represented by an OAuthToken message.
+}
+
+// ValidateTokenRequest is used to validate an access token.
+message ValidateTokenRequest {
+  string access_token = 1; // The access token to validate, typically provided in the Authorization header of an API request.
+}
+
+// ValidateTokenResponse is used to return the validation result of an access token.
+message ValidateTokenResponse {
+  bool valid = 1; // Indicates whether the access token is valid or not.
+  lemmingtrip.models.v1.OAuthToken token = 2; // The OAuth token that was validated, represented by an OAuthToken message. This may be null if the token is invalid.
+}
+
+// RevokeTokenRequest is used to revoke a specific OAuth token by its ID.
+message RevokeTokenRequest {
+  string id = 1; // Identifier for the token to revoke, linking to the OAuthToken message.
+}
+
+// RevokeTokenResponse is used to return the result of the token revocation.
+message RevokeTokenResponse {
+  bool success = 1; // Indicates whether the token revocation was successful or not.
+}
+
+// RevokeAllTokensRequest is used to revoke all tokens associated with a specific user and client.
+message RevokeAllTokensRequest {
+  string user_id = 1; // Identifier for the user whose tokens are to be revoked, linking to the User message.
+  string client_id = 2; // Identifier for the client application whose tokens are to be revoked, linking to the Client message.
+}
+
+// RevokeAllTokensResponse is used to return the result of revoking all tokens for a user and client.
+message RevokeAllTokensResponse {
+  int32 revoked_count = 1; // The number of tokens that were successfully revoked, indicating how many tokens were affected by the operation.
+}
+
+// ListTokensRequest is used to list OAuth tokens with pagination and filtering options.
+message ListTokensRequest {
+  int32 take = 1; // The maximum number of tokens to return, controlling the size of each response.
+  int32 skip = 2; // The number of tokens to skip before starting to return results, used for pagination.
+  string filter = 3; // Optional filter string to apply to the token list, allowing clients to filter tokens by criteria such as user ID or client ID.
+}
+
+// ListTokensResponse is used to return a list of OAuth tokens along with pagination information.
+message ListTokensResponse {
+  repeated lemmingtrip.models.v1.OAuthToken tokens = 1; // The list of OAuth tokens matching the request, represented by repeated OAuthToken messages.
+  int32 total = 2; //
+}
+
+// ListUserTokensRequest is used to list OAuth tokens for a specific user with pagination options.
+message ListUserTokensRequest {
+  string user_id = 1; // Identifier for the user whose tokens are to be listed, linking to the User message.
+  int32 take = 2; // The maximum number of tokens to return, controlling the size of each response.
+  int32 skip = 3; // The number of tokens to skip before starting to return results, used for pagination.
+  string filter = 4; // Optional filter string to apply to the token list, allowing clients to filter tokens by criteria such as client ID or scope.
+}
+
+// ListUserTokensResponse is used to return a list of OAuth tokens for a specific user along with pagination information.
+message ListUserTokensResponse {
+  repeated lemmingtrip.models.v1.OAuthToken tokens = 1; // The list of OAuth tokens for the specified user, represented by repeated OAuthToken messages.
+  int32 total = 2; // The total number of tokens for the user, used for pagination and to inform clients about the total available tokens.
+}
+
+// GetActiveTokensRequest is used to retrieve all active tokens for a specific user.
+message GetActiveTokensRequest {
+  string user_id = 1; // Identifier for the user whose active tokens are to be retrieved, linking to the User message.
+}
+
+// GetActiveTokensResponse is used to return a list of active OAuth tokens for a specific user.
+message GetActiveTokensResponse {
+  repeated lemmingtrip.models.v1.OAuthToken tokens = 1; // The list of active OAuth tokens for the specified user, represented by repeated OAuthToken messages.
 }
