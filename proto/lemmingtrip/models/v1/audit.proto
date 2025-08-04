@@ -2,6 +2,8 @@ syntax = "proto3";
 
 package lemmingtrip.models.v1;
 
+import "google/protobuf/timestamp.proto";
+
 option go_package = "github.com/lemming-trip/lemming-trip-proto/proto/lemmingtrip/models/v1;modelsv1";
 option java_multiple_files = true;
 option java_package = "com.lemmingtrip.models.v1";
@@ -32,7 +34,7 @@ message SecurityAuditLog {
   string ip_address = 5; // IP address from which the event originated.
   string user_agent = 6; // User agent string of the client that triggered the event.
   map<string, string> details = 7; // Additional details about the security event, stored as key-value pairs.
-  string created_at = 8; // Timestamp of when the security event occurred, in ISO 8601 format.
+  google.protobuf.Timestamp created_at = 8; // Timestamp of when the security event occurred, in ISO 8601 format.
 }
 
 // ListSecurityEventsRequest represents a request to list security events.
@@ -55,6 +57,8 @@ message ListSecurityEventsResponse {
 message CreateSecurityEventRequest {
   SecurityAuditLog event = 1; // The security audit log entry to be created.
 }
+
+// CreateSecurityEventResponse represents a response to a create security event request.
 message CreateSecurityEventResponse {
   SecurityAuditLog event = 1; // The created security audit log entry.
 }

@@ -2,26 +2,62 @@ syntax = "proto3";
 
 package lemmingtrip.models.v1;
 
+import "google/protobuf/timestamp.proto";
+
 option go_package = "github.com/lemming-trip/lemming-trip-proto/proto/lemmingtrip/models/v1;modelsv1";
 option java_multiple_files = true;
 option java_package = "com.lemmingtrip.models.v1";
 option swift_prefix = "LTModelsV1";
 
+// GdprConsentType defines the types of GDPR consents that can be granted by users.
 enum GdprConsentType {
-  GDPR_CONSENT_TYPE_UNSPECIFIED = 0;
-  GDPR_CONSENT_TYPE_MARKETING = 1;
-  GDPR_CONSENT_TYPE_ANALYTICS = 2;
-  GDPR_CONSENT_TYPE_COOKIES = 3;
-  GDPR_CONSENT_TYPE_OTHER = 4;
+  GDPR_CONSENT_TYPE_UNSPECIFIED = 0; // Default value, should not be used in practice.
+  GDPR_CONSENT_TYPE_MARKETING = 1; // Consent for marketing communications, such as newsletters and promotional emails.
+  GDPR_CONSENT_TYPE_ANALYTICS = 2; // Consent for analytics tracking, allowing the collection of user data for analysis and improvement of services.
+  GDPR_CONSENT_TYPE_COOKIES = 3; // Consent for the use of cookies, which may include tracking cookies and functional cookies.
+  GDPR_CONSENT_TYPE_OTHER = 4; // Other types of consent that may be defined in the future or for specific use cases.
 }
 
-message UserConsent {
-  string id = 1;
-  string user_id = 2;
-  GdprConsentType consent_type = 3;
-  bool is_granted = 4;
-  string granted_at = 5;
-  string revoked_at = 6;
-  string ip_address = 7;
-  string created_at = 8;
+// GdprConsent represents a user's consent to GDPR-related data processing activities.
+// It includes the type of consent, whether it is granted or revoked, and timestamps for when the consent was granted or revoked.
+message GdprConsent {
+  string id = 1; // Unique identifier for the consent record, typically a UUID.
+  string user_id = 2; // Identifier for the user who granted the consent, linking to the User message.
+  GdprConsentType consent_type = 3; // The type of consent being granted, such as marketing, analytics, or cookies.
+  bool is_granted = 4; // Indicates whether the consent is granted (true) or revoked (false).
+  google.protobuf.Timestamp granted_at = 5; // Timestamp indicating when the consent was granted, useful for tracking when the user agreed to the terms.
+  google.protobuf.Timestamp revoked_at = 6; // Timestamp indicating when the consent was revoked, if applicable. This is used to track when the user changed their consent status.
+  string ip_address = 7; // IP address from which the consent was granted or revoked, useful for security and auditing purposes.
+  google.protobuf.Timestamp created_at = 8; // Timestamp indicating when the consent record was created, useful for auditing and record-keeping.
+}
+
+// UserConsent represents a user's consent record, including the user information and consent details.
+message ListConsentsRequest {
+  string user_id = 1; // Identifier for the user whose consents are being requested. This links to the User message.
+}
+
+// UserConsent represents a user's consent record, including the user information and consent details.
+message ListConsentsResponse {
+  repeated GdprConsent consents = 1; // List of consents granted by the user, each represented by a UserConsent message.
+}
+
+// GetGdprConsentRequest is used to retrieve a specific consent by its ID.
+message GetGdprConsentRequest {
+  string consent_id = 1; // Identifier for the consent to retrieve, linking to the GdprConsent message.
+}
+
+// GetGdprConsentResponse is used to return the consent record that matches the requested ID.
+message GetGdprConsertResponse {
+  GdprConsent consent = 1; // The consent record that matches the requested ID, represented by a GdprConsent message.
+}
+
+// RevokeConsentRequest is used to request the revocation of a specific consent by its ID.
+// It includes the consent ID to identify which consent should be revoked.
+message RevokeConsentRequest {
+  string consent_id = 1; // Identifier for the consent that is being revoked, linking to the GdprConsent message.
+}
+
+// RevokeConsentResponse is used to return the consent record that has been revoked.
+message RevokeConsentResponse {
+  GdprConsent consent = 1; // The consent record that has been revoked, represented by a GdprConsent message.
 }

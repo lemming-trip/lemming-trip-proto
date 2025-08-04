@@ -8,20 +8,12 @@ option java_multiple_files = true;
 option java_package = "com.lemmingtrip.services.v1";
 option swift_prefix = "LTServicesV1";
 
+// The GdprService provides methods for managing user consents in compliance with GDPR regulations.
 service GdprService {
-  rpc ListConsents(ListConsentsRequest) returns (ListConsentsResponse);
-  rpc GrantConsent(lemmingtrip.models.v1.UserConsent) returns (lemmingtrip.models.v1.UserConsent);
-  rpc RevokeConsent(RevokeConsentRequest) returns (lemmingtrip.models.v1.UserConsent);
-}
-
-message ListConsentsRequest {
-  string user_id = 1;
-}
-
-message ListConsentsResponse {
-  repeated lemmingtrip.models.v1.UserConsent consents = 1;
-}
-
-message RevokeConsentRequest {
-  string consent_id = 1;
+  // ListConsents retrieves all consents granted by a specific user.
+  rpc ListConsents(lemmingtrip.models.v1.ListConsentsRequest) returns (lemmingtrip.models.v1.ListConsentsResponse);
+  // GetGdprConsent retrieves a specific consent by its ID.
+  rpc GrantConsent(lemmingtrip.models.v1.GetGdprConsentRequest) returns (lemmingtrip.models.v1.GetGdprConsertResponse);
+  // RevokeConsent revokes a specific consent by its ID.
+  rpc RevokeConsent(lemmingtrip.models.v1.RevokeConsentRequest) returns (lemmingtrip.models.v1.RevokeConsentResponse);
 }

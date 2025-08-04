@@ -116,7 +116,7 @@ message ActivateAccountRequest {
 
 // Response message for ActivateAccountRequest.
 message ActivateAccountResponse {
-  lemmingtrip.models.v1.Account account = 1; // The activated account details after the operation, including any updated fields like is_verified and verified_at.
+  Account account = 1; // The activated account details after the operation, including any updated fields like is_verified and verified_at.
 }
 
 // Request and response messages for email verification.
