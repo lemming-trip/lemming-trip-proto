@@ -1,40 +1,24 @@
 syntax = "proto3";
 package lemmingtrip.services.v1;
 
-import "lemmingtrip/models/v1/trip_replies.proto";
+import "lemmingtrip/models/v1/trip_reply.proto";
 
 option go_package = "github.com/lemming-trip/lemming-trip-proto/proto/lemmingtrip/services/v1;servicesv1";
 option java_multiple_files = true;
 option java_package = "com.lemmingtrip.services.v1";
 option swift_prefix = "LTServicesV1";
 
+// TripRepliesService provides methods to manage trip replies.
+// It allows creating, retrieving, updating, deleting, and listing trip replies.
 service TripRepliesService {
-  rpc CreateReply(lemmingtrip.models.v1.TripReply) returns (lemmingtrip.models.v1.TripReply);
-  rpc GetReply(GetReplyRequest) returns (lemmingtrip.models.v1.TripReply);
-  rpc UpdateReply(lemmingtrip.models.v1.TripReply) returns (lemmingtrip.models.v1.TripReply);
-  rpc DeleteReply(DeleteReplyRequest) returns (DeleteReplyResponse);
-  rpc ListReplies(ListRepliesRequest) returns (ListRepliesResponse);
-}
-
-message GetReplyRequest {
-  string id = 1;
-}
-
-message DeleteReplyRequest {
-  string id = 1;
-}
-
-message DeleteReplyResponse {
-  bool success = 1;
-}
-
-message ListRepliesRequest {
-  string trip_id = 1;
-  int32 page = 2;
-  int32 page_size = 3;
-}
-
-message ListRepliesResponse {
-  repeated lemmingtrip.models.v1.TripReply replies = 1;
-  int32 total = 2;
+  // CreateReply creates a new trip reply.
+  rpc CreateReply(lemmingtrip.models.v1.CreateReplyRequest) returns (lemmingtrip.models.v1.CreateReplyResponse);
+  // GetReply retrieves a trip reply by its ID.
+  rpc GetReply(lemmingtrip.models.v1.GetReplyRequest) returns (lemmingtrip.models.v1.GetReplyResponse);
+  // UpdateReply updates an existing trip reply.
+  rpc UpdateReply(lemmingtrip.models.v1.UpdateReplyRequest) returns (lemmingtrip.models.v1.UpdateReplyResponse);
+  // DeleteReply deletes a trip reply by its ID.
+  rpc DeleteReply(lemmingtrip.models.v1.DeleteReplyRequest) returns (lemmingtrip.models.v1.DeleteReplyResponse);
+  // ListReplies lists all replies for a specific trip.ß
+  rpc ListReplies(lemmingtrip.models.v1.ListRepliesRequest) returns (lemmingtrip.models.v1.ListRepliesResponse);
 }

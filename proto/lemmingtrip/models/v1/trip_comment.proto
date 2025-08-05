@@ -2,18 +2,101 @@ syntax = "proto3";
 
 package lemmingtrip.models.v1;
 
+import "google/protobuf/timestamp.proto";
+
 option go_package = "github.com/lemming-trip/lemming-trip-proto/proto/lemmingtrip/models/v1;modelsv1";
 option java_multiple_files = true;
 option java_package = "com.lemmingtrip.models.v1";
 option swift_prefix = "LTModelsV1";
 
+// TripComment represents a comment on a trip.
 message TripComment {
-  string id = 1;
-  string trip_id = 2;
-  string user_id = 3;
-  string parent_id = 4;
-  string text = 5;
-  string created_at = 6;
-  bool is_read = 7;
-  bool is_deleted = 8;
+  string id = 1; // Unique identifier for the comment, typically a UUID.
+  string trip_id = 2; // Identifier for the trip this comment belongs to, linking to the Trip message.
+  string user_id = 3; // Identifier for the user who made the comment, linking to the User message.
+  string parent_id = 4; // Identifier for the parent comment, if this is a reply to another comment, linking to the TripComment message.
+  string text = 5; // The content of the comment, which can include text and possibly formatted content.
+  google.protobuf.Timestamp created_at = 6; // Timestamp indicating when the comment was created, useful for sorting and displaying comments in chronological order.
+  bool is_read = 7; // Indicates whether the comment has been read by the user, useful for notifications and user engagement tracking.
+  bool is_deleted = 8; // Indicates whether the comment has been deleted, allowing for soft deletion without removing the comment from the database.
+}
+
+message CreateTripCommentRequest {
+  string trip_id = 1; // Identifier for the trip this comment belongs to, linking to the Trip message.
+  string user_id = 2; // Identifier for the user who made the comment, linking to the User message.
+  string parent_id = 3; // Identifier for the parent comment, if this is a reply to another comment, linking to the TripComment message.
+  string text = 4; // The content of the comment, which can include text and possibly formatted content.
+}
+
+// CreateTripCommentResponse represents the response after creating a trip comment.
+message CreateTripCommentResponse {
+  TripComment comment = 1; // The created comment object, including its ID and other details.
+}
+
+// UpdateTripCommentRequest represents the request to update an existing trip comment.
+message UpdateTripCommentRequest {
+  string id = 1; // Unique identifier for the comment to be updated, typically a UUID.
+  string text = 2; // The new content of the comment, which can include text and possibly formatted content.
+}
+
+// UpdateTripCommentResponse represents the response after updating a trip comment.
+message UpdateTripCommentResponse {
+  TripComment comment = 1; // The updated comment object, including its ID and other details.
+}
+
+// GetCommentRequest represents the request to retrieve a specific trip comment by its ID.
+message GetCommentRequest {
+  string id = 1; // Unique identifier for the comment to be retrieved, typically a UUID.
+}
+
+// GetCommentResponse represents the response after retrieving a trip comment.
+message GetCommentResponse {
+  TripComment comment = 1; // The retrieved comment object, including its ID and other details.
+}
+
+// DeleteCommentRequest represents the request to delete a trip comment by its ID.
+message DeleteCommentRequest {
+  string id = 1; // Unique identifier for the comment to be deleted, typically a UUID.
+}
+
+// DeleteCommentResponse represents the response after deleting a trip comment.
+message DeleteCommentResponse {
+  bool success = 1; // Indicates whether the deletion was successful.
+}
+
+// ListCommentsRequest represents the request to list comments for a specific trip.
+message ListCommentsRequest {
+  string trip_id = 1; // Identifier for the trip whose comments are being requested, linking to the Trip message.
+  int32 take = 2; // The maximum number of comments to return in the response, useful for pagination.
+  int32 skip = 3; // The number of comments to skip before starting to return results, useful for pagination.
+}
+
+// ListCommentsResponse represents the response after listing comments for a trip.
+message ListCommentsResponse {
+  repeated TripComment comments = 1; // List of comments for the specified trip, including their IDs and other details.
+  int32 total = 2; // Total number of comments for the trip, useful for pagination and displaying the total count to users.
+}
+
+// MarkCommentAsReadRequest is used to mark a specific comment as read by a user.
+message MarkCommentAsReadRequest {
+  string comment_id = 1; // ID of the comment to mark as read.
+  string user_id = 2; // ID of the user marking the comment as read, linking to the User message.
+}
+
+// MarkCommentAsReadResponse indicates the success of the operation to mark a comment as read.
+message MarkCommentAsReadResponse {
+  bool success = 1; // Indicates whether the comment was successfully marked as read.
+}
+
+// ListUnreadCommentsRequest is used to list all unread comments for a specific user.
+message ListUnreadCommentsRequest {
+  string user_id = 1; // ID of the user for whom to list unread comments, linking to the User message.
+  int32 take = 2; // Number of unread comments to return in the response, useful for pagination.
+  int32 skip = 3; // Number of unread comments to skip before starting to return results, useful for pagination.
+}
+
+// ListUnreadCommentsResponse represents the response containing a list of unread comments for a user.
+message ListUnreadCommentsResponse {
+  repeated TripComment comments = 1; // List of unread comments for the specified user, including their IDs and other details.
+  int32 total = 2; // Total number of unread comments for the user, useful for pagination and displaying the total count to users.
 }

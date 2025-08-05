@@ -1,7 +1,7 @@
 syntax = "proto3";
 package lemmingtrip.services.v1;
 
-import "lemmingtrip/models/v1/account.proto";
+import "lemmingtrip/models/v1/trip_comment.proto";
 
 option go_package = "github.com/lemming-trip/lemming-trip-proto/proto/lemmingtrip/services/v1;servicesv1";
 option java_multiple_files = true;
@@ -9,32 +9,18 @@ option java_package = "com.lemmingtrip.services.v1";
 option swift_prefix = "LTServicesV1";
 
 service TripCommentsService {
-  rpc CreateComment(lemmingtrip.models.v1.TripComment) returns (lemmingtrip.models.v1.TripComment);
-  rpc GetComment(GetCommentRequest) returns (lemmingtrip.models.v1.TripComment);
-  rpc UpdateComment(lemmingtrip.models.v1.TripComment) returns (lemmingtrip.models.v1.TripComment);
-  rpc DeleteComment(DeleteCommentRequest) returns (DeleteCommentResponse);
-  rpc ListComments(ListCommentsRequest) returns (ListCommentsResponse);
-}
-
-message GetCommentRequest {
-  string id = 1;
-}
-
-message DeleteCommentRequest {
-  string id = 1;
-}
-
-message DeleteCommentResponse {
-  bool success = 1;
-}
-
-message ListCommentsRequest {
-  string trip_id = 1;
-  int32 page = 2;
-  int32 page_size = 3;
-}
-
-message ListCommentsResponse {
-  repeated lemmingtrip.models.v1.TripComment comments = 1;
-  int32 total = 2;
+  // Create a new trip comment
+  rpc CreateTripComment(lemmingtrip.models.v1.CreateTripCommentRequest) returns (lemmingtrip.models.v1.CreateTripCommentResponse);
+  // Get a specific trip comment by ID
+  rpc GetComment(lemmingtrip.models.v1.GetCommentRequest) returns (lemmingtrip.models.v1.GetCommentResponse);
+  // Update an existing trip comment
+  rpc UpdateTripComment(lemmingtrip.models.v1.UpdateTripCommentRequest) returns (lemmingtrip.models.v1.UpdateTripCommentResponse);
+  // Delete a trip comment by ID
+  rpc DeleteComment(lemmingtrip.models.v1.DeleteCommentRequest) returns (lemmingtrip.models.v1.DeleteCommentResponse);
+  // List comments for a specific trip
+  rpc ListComments(lemmingtrip.models.v1.ListCommentsRequest) returns (lemmingtrip.models.v1.ListCommentsResponse);
+  // Mark a comment as read
+  rpc MarkCommentAsRead(lemmingtrip.models.v1.MarkCommentAsReadRequest) returns (lemmingtrip.models.v1.MarkCommentAsReadResponse);
+  // List unread comments for a user
+  rpc ListUnreadComments(lemmingtrip.models.v1.ListUnreadCommentsRequest) returns (lemmingtrip.models.v1.ListUnreadCommentsResponse);
 }
