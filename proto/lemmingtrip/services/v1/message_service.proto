@@ -8,18 +8,19 @@ option java_multiple_files = true;
 option java_package = "com.lemmingtrip.services.v1";
 option swift_prefix = "LTServicesV1";
 
+// MessageService provides methods for sending, editing, deleting, and retrieving messages.
+// It also includes methods for listing messages and marking them as read.
 service MessageService {
-  rpc SendMessage(lemmingtrip.models.v1.Message) returns (lemmingtrip.models.v1.Message);
-  rpc ListMessages(ListMessagesRequest) returns (ListMessagesResponse);
-}
-
-message ListMessagesRequest {
-  string user_id = 1;
-  int32 page = 2;
-  int32 page_size = 3;
-}
-
-message ListMessagesResponse {
-  repeated lemmingtrip.models.v1.Message messages = 1;
-  int32 total = 2;
+  // SendMessage sends a new message to the recipient.
+  rpc SendMessage(lemmingtrip.models.v1.SendMessageRequest) returns (lemmingtrip.models.v1.SendMessageResponse);
+  // EditMessage edits an existing message by its ID.
+  rpc EditMessage(lemmingtrip.models.v1.EditMessageRequest) returns (lemmingtrip.models.v1.EditMessageResponse);
+  // DeleteMessage deletes a message by its ID.
+  rpc DeleteMessage(lemmingtrip.models.v1.DeleteMessageRequest) returns (lemmingtrip.models.v1.DeleteMessageResponse);
+  // GetMessage retrieves a specific message by its ID.
+  rpc GetMessage(lemmingtrip.models.v1.GetMessageRequest) returns (lemmingtrip.models.v1.GetMessageResponse);
+  // ListMessages retrieves a list of messages with pagination and filtering options.
+  rpc ListMessages(lemmingtrip.models.v1.ListMessagesRequest) returns (lemmingtrip.models.v1.ListMessagesResponse);
+  // MarkAsRead marks a message as read by its ID.
+  rpc MarkAsRead(lemmingtrip.models.v1.MarkAsReadRequest) returns (lemmingtrip.models.v1.MarkAsReadResponse);
 }

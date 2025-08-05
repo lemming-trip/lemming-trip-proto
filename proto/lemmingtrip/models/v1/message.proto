@@ -2,16 +2,91 @@ syntax = "proto3";
 
 package lemmingtrip.models.v1;
 
+import "google/protobuf/timestamp.proto";
+
 option go_package = "github.com/lemming-trip/lemming-trip-proto/proto/lemmingtrip/models/v1;modelsv1";
 option java_multiple_files = true;
 option java_package = "com.lemmingtrip.models.v1";
 option swift_prefix = "LTModelsV1";
 
+// Message represents a chat message in the system.
+// It includes fields for sender, recipient, content, attachments, read status,
+// edit status, and timestamps for creation, update, and deletion.
 message Message {
-  string id = 1;
-  string sender_id = 2;
-  string recipient_id = 3;
-  string content = 4;
-  string created_at = 5;
-  bool is_read = 6;
+  string id = 1; // UUID (RFC4122)
+  string sender_id = 2; // UUID of the user who sent the message
+  string recipient_id = 3; // UUID of the user who received the message
+  string content = 4; // Text content of the message
+  repeated string attachments = 5; // List of attachment URLs or IDs
+  bool is_read = 6; // Indicates whether the message has been read by the recipient
+  bool is_edited = 7; // Indicates whether the message has been edited after being sent
+  google.protobuf.Timestamp created_at = 8; // Timestamp when the message was created
+  google.protobuf.Timestamp updated_at = 9; // Timestamp when the message was last updated (edited or read status changed)
+  google.protobuf.Timestamp deleted_at = 10; // Timestamp when the message was deleted, if applicable
+}
+
+// Chat represents a chat session between users.
+message SendMessageRequest {
+  Message message = 1; // The message to be sent
+}
+
+// Response for sending a message.
+message SendMessageResponse {
+  Message message = 1; // The message that was sent, including any updates made by the server
+}
+
+// Request to edit an existing message.
+message EditMessageRequest {
+  string id = 1; // UUID of the message to be edited
+  string new_content = 2; // New content for the message
+  repeated string new_attachments = 3; // New list of attachment URLs or IDs
+}
+
+// Response for editing a message.
+message EditMessageResponse {
+  Message message = 1; // The updated message after editing
+}
+
+// Request to delete a message.
+message DeleteMessageRequest {
+  string id = 1; // UUID of the message to be deleted
+}
+
+// Response for deleting a message.
+message DeleteMessageResponse {
+  bool success = 1; // Indicates whether the deletion was successful
+}
+
+// Request to get a specific message by its ID.
+message GetMessageRequest {
+  string id = 1; // UUID of the message to retrieve
+}
+
+// Response for getting a specific message.
+message GetMessageResponse {
+  lemmingtrip.models.v1.Message message = 1; // The message that was retrieved
+}
+
+// Request to list messages for a user, with pagination support.
+message ListMessagesRequest {
+  string user_id = 1; // UUID of the user whose messages are being requested
+  int32 take = 2; // Number of messages to retrieve (pagination)
+  int32 skip = 3; // Number of messages to skip (pagination)
+}
+
+// Response for listing messages.
+message ListMessagesResponse {
+  Message messages = 1; // List of messages for the user
+  int32 total = 2; // Total number of messages available for the user
+}
+
+// Request to mark messages as read.
+message MarkAsReadRequest {
+  string user_id = 1; // UUID of the user marking messages as read
+  repeated string message_ids = 2; // List of message IDs to mark as read
+}
+
+// Response for marking messages as read.
+message MarkAsReadResponse {
+  int32 marked_count = 1; // Number of messages successfully marked as read
 }
