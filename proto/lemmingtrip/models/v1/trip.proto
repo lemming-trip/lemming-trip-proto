@@ -2,38 +2,293 @@ syntax = "proto3";
 
 package lemmingtrip.models.v1;
 
+import "google/protobuf/timestamp.proto";
+
 option go_package = "github.com/lemming-trip/lemming-trip-proto/proto/lemmingtrip/models/v1;modelsv1";
 option java_multiple_files = true;
 option java_package = "com.lemmingtrip.models.v1";
 option swift_prefix = "LTModelsV1";
 
+// TripType defines the different types of trips.
 enum TripType {
-  TRIP_TYPE_UNSPECIFIED = 0;
-  TRIP_TYPE_INDIVIDUAL = 1;
-  TRIP_TYPE_GROUP = 2;
-  TRIP_TYPE_NDIVIDUAL_OR_GROUP = 3;
+  TRIP_TYPE_UNSPECIFIED = 0; // Default value, should not be used in practice.
+  TRIP_TYPE_INDIVIDUAL = 1; // Individual trips taken by a single user, not involving any group or team.
+  TRIP_TYPE_GROUP = 2; // Group trips involving multiple users, typically organized around a common goal or destination.
+  TRIP_TYPE_NDIVIDUAL_OR_GROUP = 3; // Trips that can be either individual or group, allowing flexibility in participation.
 }
 
+// TripSearchType defines the different search types for trips.
 enum TripSearchType {
-  TRIP_SEARCH_TYPE_UNSPECIFIED = 0;
-  TRIP_SEARCH_TYPE_TEAM = 1;
-  TRIP_SEARCH_TYPE_GUIDE = 2;
-  TRIP_SEARCH_TYPE_SPONSOR = 3;
+  TRIP_SEARCH_TYPE_UNSPECIFIED = 0; // Default value, should not be used in practice.
+  TRIP_SEARCH_TYPE_TEAM = 1; // Team trips where users can join or create trips as part of a team.
+  TRIP_SEARCH_TYPE_GUIDE = 2; // Guide trips where users can find trips led by guides or tour leaders.
+  TRIP_SEARCH_TYPE_SPONSOR = 3; // Sponsor trips where users can find trips sponsored by organizations or companies.
 }
 
+// Trip represents a trip in the system.
 message Trip {
-  string id = 1;
-  string user_id = 2;
-  string title = 3;
-  string text = 4;
-  string title_image = 5;
-  repeated string images = 6;
-  string video_link = 7;
-  string route = 8;
-  int32 rating = 9;
-  int32 likes = 10;
-  TripType trip_type = 11;
-  TripSearchType trip_search_type = 12;
-  string created_at = 13;
-  string updated_at = 14;
+  string id = 1; // UUID (RFC4122)
+  string user_id = 2; // UUID of the user who created the trip
+  string title = 3; // Title of the trip
+  string text = 4; // Description of the trip
+  string title_image = 5; // URL of the title image for the trip
+  repeated string images = 6; // URLs of images associated with the trip
+  string video_link = 7; // URL of a video link associated with the trip
+  string route = 8; // Route information for the trip, vector route in GeoJSON format
+  int32 rating = 9; // Rating of the trip, typically from 1 to 5
+  int32 likes = 10; // Number of likes the trip has received
+  TripType trip_type = 11; // Type of the trip, indicating whether it's individual, group, or flexible
+  TripSearchType trip_search_type = 12; // Search type of the trip, indicating whether it's a team, guide, or sponsor trip
+  google.protobuf.Timestamp created_at = 13; // Timestamp when the trip was created
+  google.protobuf.Timestamp updated_at = 14; // Timestamp when the trip was last updated
+}
+
+// CreateTripRequest is the request message for creating a new trip.
+message CreateTripRequest {
+  string user_id = 1; // UUID of the user creating the trip
+  string title = 2; // Title of the trip
+  string text = 3; // Description of the trip
+  string title_image = 4; // URL of the title image for the trip
+  repeated string images = 5; // URLs of images associated with the trip
+  string video_link = 6; // URL of a video link associated with the trip
+  string route = 7; // Route information for the trip, vector route in GeoJSON format
+  TripType trip_type = 8; // Type of the trip, indicating whether it's individual, group, or flexible
+  TripSearchType trip_search_type = 9; // Search type of the trip, indicating whether it's a team, guide, or sponsor trip
+}
+
+// CreateTripResponse is the response message for creating a trip.
+message CreateTripResponse {
+  Trip trip = 1; // The newly created trip, represented by a Trip message
+}
+
+// UpdateTripRequest is the request message for updating an existing trip.
+message UpdateTripRequest {
+  string trip_id = 1; // UUID of the trip to update
+  string title = 2; // Title of the trip
+  string text = 3; // Description of the trip
+  string title_image = 4; // URL of the title image for the trip
+  repeated string images = 5; // URLs of images associated with the trip
+  string video_link = 6; // URL of a video link associated with the trip
+  string route = 7; // Route information for the trip, vector route in GeoJSON format
+  TripType trip_type = 8; // Type of the trip, indicating whether it's individual, group, or flexible
+  TripSearchType trip_search_type = 9; // Search type of the trip, indicating whether it's a team, guide, or sponsor trip
+}
+
+// UpdateTripResponse is the response message for updating an existing trip.
+message UpdateTripResponse {
+  Trip trip = 1; // The updated trip, represented by a Trip message
+}
+
+// GetTripRequest is the request message for getting a trip by ID.
+message GetTripRequest {
+  string id = 1; // UUID of the trip to retrieve
+}
+
+// GetTripResponse is the response message containing the trip details.
+message GetTripResponse {
+  Trip trip = 1; // The trip details retrieved by the ID
+}
+
+// DeleteTripRequest is the request message for deleting a trip by ID.
+message DeleteTripRequest {
+  string id = 1; // UUID of the trip to delete
+}
+
+// DeleteTripResponse is the response message for the delete trip operation.
+message DeleteTripResponse {
+  bool success = 1; // Indicates whether the trip was successfully deleted
+}
+
+// ListTripsRequest is the request message for listing trips with pagination and filtering.
+message ListTripsRequest {
+  int32 take = 1; // Number of trips to take (limit)
+  int32 from = 2; // Offset from which to start listing trips (for pagination)
+  string filter = 3; // Filter string to apply to the trip list, can include search terms or criteria
+}
+
+// ListTripsResponse is the response message containing a list of trips.
+message ListTripsResponse {
+  repeated Trip trips = 1; // List of trips returned by the request
+  int32 total = 2; // Total number of trips matching the request criteria, useful for pagination
+}
+
+// LikeTripRequest is the request message for liking a trip.
+message LikeTripRequest {
+  string trip_id = 1; // UUID of the trip to like
+  string user_id = 2; // UUID of the user liking the trip
+}
+
+// LikeTripResponse is the response message for the like trip operation.
+message LikeTripResponse {
+  bool success = 1; // Indicates whether the trip was successfully liked
+}
+
+// UnlikeTripRequest is the request message for unliking a trip.
+message UnlikeTripRequest {
+  string trip_id = 1; // UUID of the trip to unlike
+  string user_id = 2; // UUID of the user unliking the trip
+}
+
+// UnlikeTripResponse is the response message for the unlike trip operation.
+message UnlikeTripResponse {
+  bool success = 1; // Indicates whether the trip was successfully unliked
+}
+
+// RateTripRequest is the request message for rating a trip.
+message RateTripRequest {
+  string trip_id = 1; // UUID of the trip to rate
+  string user_id = 2; // UUID of the user rating the trip
+  int32 rating = 3; // Rating value, typically from 1 to 5
+}
+
+// RateTripResponse is the response message for the rate trip operation.
+message RateTripResponse {
+  bool success = 1; // Indicates whether the trip was successfully rated
+}
+
+// ListUserTripsRequest is the request message for listing trips created by a specific user.
+message SearchTripsRequest {
+  string query = 1; // Search query string to filter trips based on title, description, or other criteria
+  int32 take = 2; // Number of trips to take (limit)
+  int32 skip = 3; // Offset from which to start listing trips (for pagination)
+  string sort_by = 4; // Field to sort the results by, e.g., "created_at", "rating"
+  bool desc = 5; // Whether to sort in descending order (true) or ascending order (false)
+}
+
+// ListUserTripsResponse is the response message containing a list of trips created by a specific user.
+message SearchTripsResponse {
+  repeated lemmingtrip.models.v1.Trip trips = 1; // List of trips matching the search criteria
+  int32 total = 2; // Total number of trips matching the search criteria, useful for pagination
+}
+
+// ListUserTripsRequest is the request message for listing trips created by a specific user.
+message RestoreTripRequest {
+  string trip_id = 1; // UUID of the trip to restore
+}
+
+// RestoreTripResponse is the response message for the restore trip operation.
+message RestoreTripResponse {
+  bool success = 1; // Indicates whether the trip was successfully restored
+}
+
+// ListUserTripsResponse is the response message containing a list of trips created by a specific user.
+message FeatureTripRequest {
+  string trip_id = 1; // UUID of the trip to feature
+  bool featured = 2; // Whether to feature the trip (true) or unfeature it (false)
+}
+
+// FeatureTripResponse is the response message for the feature trip operation.
+message FeatureTripResponse {
+  bool success = 1;
+}
+
+// GetTripStatsRequest is the request message for getting statistics about a trip.
+message GetTripStatsRequest {
+  string trip_id = 1; // UUID of the trip for which to retrieve statistics
+}
+
+// GetTripStatsResponse is the response message containing statistics about a trip.
+message GetTripStatsResponse {
+  int32 views = 1; // Number of views the trip has received
+  int32 likes = 2; // Number of likes the trip has received
+  int32 comments = 3; // Number of comments on the trip
+  float avg_rating = 4; // Average rating of the trip, calculated from user ratings
+}
+
+// BatchDeleteTripsRequest is the request message for deleting multiple trips in a single operation.
+message BatchDeleteTripsRequest {
+  repeated string trip_ids = 1; // List of UUIDs of the trips to delete
+}
+
+// BatchDeleteTripsResponse is the response message for the batch delete trips operation.
+message BatchDeleteTripsResponse {
+  int32 deleted_count = 1; // Number of trips successfully deleted in the batch operation
+}
+
+// ListTripLikersRequest is the request message for listing users who liked a specific trip.
+message ListTripLikersRequest {
+  string trip_id = 1; // UUID of the trip for which to list likers
+  int32 take = 2; // Number of likers to take (limit)
+  int32 skip = 3; // Offset from which to start listing likers (for pagination)
+}
+
+// ListTripLikersResponse is the response message containing a list of users who liked a specific trip.
+message ListTripLikersResponse {
+  repeated string user_ids = 1; // List of user IDs who liked the trip
+  int32 total = 2; // Total number of users who liked the trip, useful for pagination
+}
+
+// LogTripViewRequest is the request message for logging a view of a trip.
+message IsTripLikedByUserRequest {
+  string trip_id = 1; // UUID of the trip to check
+  string user_id = 2; // UUID of the user to check if they liked the trip
+}
+
+// LogTripViewResponse is the response message for logging a view of a trip.
+message IsTripLikedByUserResponse {
+  bool liked = 1; // Indicates whether the user has liked the trip
+}
+
+// GetUserTripRatingRequest is the request message for getting a user's rating for a specific trip.
+message GetUserTripRatingRequest {
+  string trip_id = 1; // UUID of the trip for which to get the user's rating
+  string user_id = 2; // UUID of the user whose rating is being requested
+}
+
+// GetUserTripRatingResponse is the response message containing the user's rating for a specific trip.
+message GetUserTripRatingResponse {
+  int32 rating = 1; // User's rating for the trip, typically from 1 to 5
+}
+
+// ListTripRatingsRequest is the request message for listing ratings for a specific trip.
+message ListTripRatingsRequest {
+  string trip_id = 1; // UUID of the trip for which to list ratings
+  int32 take = 2; // Number of ratings to take (limit)
+  int32 skip = 3; // Offset from which to start listing ratings (for pagination)
+}
+
+// ListTripRatingsResponse is the response message containing a list of ratings for a specific trip.
+message ListTripRatingsResponse {
+  message UserRating {
+    string user_id = 1; // UUID of the user who rated the trip
+    int32 rating = 2; // User's rating for the trip, typically from 1 to 5
+    string comment = 3; // Optional comment provided by the user along with their rating
+  }
+  repeated UserRating ratings = 1; // List of ratings for the trip, each containing user ID, rating value, and optional comment
+  int32 total = 2; // Total number of ratings for the trip, useful for pagination
+}
+
+// LogTripViewRequest is the request message for logging a view of a trip.
+message LogTripViewRequest {
+  string trip_id = 1; // UUID of the trip being viewed
+  string user_id = 2; // UUID of the user viewing the trip, can be empty for anonymous views
+  bool is_anonymous = 3; // Indicates whether the view is from an anonymous user (true) or a registered user (false)
+}
+
+// LogTripViewResponse is the response message for logging a view of a trip.
+message LogTripViewResponse {
+  bool success = 1; // Indicates whether the trip view was successfully logged
+}
+
+// GetTripViewsCountRequest is the request message for getting the total number of views for a specific trip.
+message GetTripViewsCountRequest {
+  string trip_id = 1; // UUID of the trip for which to retrieve the views count
+}
+
+// GetTripViewsCountResponse is the response message containing the total number of views for a specific trip.
+message GetTripViewsCountResponse {
+  int32 views = 1; // Total number of views for the trip
+}
+
+// ListTripViewersRequest is the request message for listing users who have viewed a specific trip.
+message ListTripViewersRequest {
+  string trip_id = 1; // UUID of the trip for which to list viewers
+  int32 take = 2; // Number of viewers to take (limit)
+  int32 skip = 3; // Offset from which to start listing viewers (for pagination)
+}
+
+// ListTripViewersResponse is the response message containing a list of users who have viewed a specific trip.
+message ListTripViewersResponse {
+  repeated string user_ids = 1; // List of user IDs who have viewed the trip
+  int32 total = 2; // Total number of users who have viewed the trip, useful for pagination
 }
