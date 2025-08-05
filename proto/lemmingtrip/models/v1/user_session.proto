@@ -2,20 +2,137 @@ syntax = "proto3";
 
 package lemmingtrip.models.v1;
 
+import "google/protobuf/timestamp.proto";
+
 option go_package = "github.com/lemming-trip/lemming-trip-proto/proto/lemmingtrip/models/v1;modelsv1";
 option java_multiple_files = true;
 option java_package = "com.lemmingtrip.models.v1";
 option swift_prefix = "LTModelsV1";
 
+// UserSession represents a user session in the system.
+// It contains information about the session, including the user, device, and session details.
 message UserSession {
-  string id = 1;
-  string account_id = 2;
-  string session_token = 3;
-  string ip_address = 4;
-  string user_agent = 5;
-  string device_info = 6; // JSON string
-  string expires_at = 7;
-  string last_activity = 8;
-  string created_at = 9;
-  string revoked_at = 10;
+  string id = 1; // Unique identifier for the session
+  string user_id = 2; // ID of the user associated with the session
+  string account_id = 3; // ID of the account associated with the session
+  string session_token = 4; // Token used to authenticate the session
+  string ip_address = 5; // IP address from which the session was created
+  string user_agent = 6; // User agent string of the device used for the session
+  DeviceInfo device_info = 7; // JSON string containing device information
+  google.protobuf.Timestamp expires_at = 8; // Timestamp when the session expires
+  string last_activity = 9; // Timestamp of the last activity in the session
+  google.protobuf.Timestamp created_at = 10; // Timestamp when the session was created
+  google.protobuf.Timestamp revoked_at = 11; // Timestamp when the session was revoked, if applicable
+  bool is_active = 12; // Indicates if the session is currently active
+
+  // DeviceInfo represents information about the device used for the session.
+  // It includes details such as device ID, type, operating system, app version, and additional metadata.
+  message DeviceInfo {
+    string device_id = 1; // Unique identifier for the device, typically a UUID or hardware ID.
+    string device_type = 2; // Type of the device, such as "mobile", "desktop", or "tablet".
+    string os = 3; // Operating system of the device, e.g., "iOS", "Android", "Windows", etc.
+    string app_version = 4; // Version of the application running on the device, useful for compatibility checks.
+    map<string, string> extra = 5; // Additional metadata about the device, stored as key-value pairs for flexibility.
+  }
+}
+
+// GetSessionRequest is used to request a specific user session by its ID.
+message GetSessionRequest {
+  string id = 1; // The ID of the user session to retrieve
+}
+
+// GetSessionResponse contains the user session details for a specific request.
+message GetSessionResponse {
+  lemmingtrip.models.v1.UserSession session = 1; // The user session details for the requested ID
+}
+
+// GetSessionResponse contains the user session details for a specific request.
+message RevokeSessionRequest {
+  string id = 1; // The ID of the user session to revoke
+}
+
+// RevokeSessionResponse indicates the success of the revocation operation.
+message RevokeSessionResponse {
+  bool success = 1; // Indicates whether the session was successfully revoked
+}
+
+// ListSessionsRequest is used to list user sessions for a specific account.
+message ListSessionsRequest {
+  string account_id = 1; // The ID of the account for which to list sessions
+  int32 take = 2; // Number of sessions to return
+  int32 skip = 3; // Number of sessions to skip for pagination
+  string filter = 4; // Optional filter for session attributes
+  bool desc = 5; // Whether to return sessions in descending order by last activity
+}
+
+// ListSessionsResponse contains a list of user sessions and the total count.
+message ListSessionsResponse {
+  repeated UserSession sessions = 1; // List of user sessions for the account
+  int32 total = 2; // Total number of sessions available for the account
+}
+
+// CreateSessionRequest is used to create a new user session.
+message CreateSessionRequest {
+  string account_id = 1; // The ID of the account for which to create the session
+  string user_id = 2; // The ID of the user for whom to create the session
+  string ip_address = 3; // The IP address from which the session is being created
+  string user_agent = 4; // The user agent string of the device creating the session
+  UserSession.DeviceInfo device_info = 5; // Device information for the session, including device ID, type, OS, app version, and additional metadata
+}
+
+// CreateSessionResponse contains the newly created user session.
+message CreateSessionResponse {
+  lemmingtrip.models.v1.UserSession session = 1; // The newly created user session, including all relevant details such as ID, user ID, account ID, session token, IP address, user agent, device info, expiration time, last activity time, creation time, revocation time, and active status.
+}
+
+// RefreshSessionRequest is used to refresh an existing user session.
+message RefreshSessionRequest {
+  string session_token = 1; // The session token of the session to refresh
+}
+
+// RefreshSessionResponse contains the refreshed user session.
+message RefreshSessionResponse {
+  lemmingtrip.models.v1.UserSession session = 1; // The refreshed user session, including updated details such as expiration time and last activity time.
+}
+
+// ValidateSessionRequest is used to validate a user session based on its session token.
+message ValidateSessionRequest {
+  string session_token = 1; // The session token of the session to validate
+}
+
+// ValidateSessionResponse indicates whether the session is valid and returns the session details if valid.
+message ValidateSessionResponse {
+  bool valid = 1; // Indicates whether the session is valid
+  UserSession session = 2; // The user session details if the session is valid, including ID, user ID, account ID, session token, IP address, user agent, device info, expiration time, last activity time, creation time, revocation time, and active status.
+}
+
+// TerminateAllSessionsRequest is used to terminate all sessions for a specific user.
+message TerminateAllSessionsRequest {
+  string user_id = 1; // The ID of the user for whom to terminate all sessions
+}
+
+// TerminateAllSessionsResponse indicates the result of the termination operation.
+message TerminateAllSessionsResponse {
+  int32 terminated_count = 1; // The number of sessions that were successfully terminated for the user
+}
+
+// ListUserSessionsRequest is used to list all sessions for a specific user.
+message GetActiveSessionsRequest {
+  string user_id = 1; // The ID of the user for whom to list active sessions
+}
+
+// ListUserSessionsResponse contains a list of user sessions for a specific user.
+message GetActiveSessionsResponse {
+  repeated UserSession sessions = 1; // List of active user sessions for the specified user, including details such as ID, user ID, account ID, session token, IP address, user agent, device info, expiration time, last activity time, creation time, revocation time, and active status.
+}
+
+// ListUserSessionsRequest is used to list all sessions for a specific user.
+message UpdateSessionActivityRequest {
+  string id = 1; // The ID of the user session for which to update activity
+  google.protobuf.Timestamp last_activity = 2; // The timestamp of the last activity in the session
+}
+
+// UpdateSessionActivityResponse contains the updated user session after activity has been recorded.
+message UpdateSessionActivityResponse {
+  UserSession session = 1; // The updated user session after recording activity, including updated last activity time and any other relevant details such as ID, user ID, account ID, session token, IP address, user agent, device info, expiration time, creation time, revocation time, and active status.
 }
