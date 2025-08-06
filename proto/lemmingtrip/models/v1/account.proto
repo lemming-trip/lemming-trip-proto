@@ -54,14 +54,36 @@ message Account {
   google.protobuf.Timestamp updated_at = 20; // Timestamp indicating when the account was last updated, useful for tracking changes to the account.
 }
 
-// Request and response messages for account creation.
-message CreateAccountRequest {
-  lemmingtrip.models.v1.Account account = 1; // The account details to create, including all necessary fields for the account.
+// Request message for creating a new local account.
+message CreateAccountLocalRequest {
+  string user_id = 1; // Identifier for the associated user, linking to the User message.
+  string password = 2; // Plain text password provided by the user, which will be hashed before storage.
 }
 
-// Response message for CreateAccountRequest.
-message CreateAccountResponse {
-  lemmingtrip.models.v1.Account account = 1; // The created account details after the operation, including any generated fields like ID and timestamps.
+message CreateAccountOAuthRequest {
+  string user_id = 1; // Identifier for the associated user, linking to the User message.
+  AccountProvider account_provider = 2; // The provider through which the account was created or authenticated.
+  string provider_user_id = 4; // Unique identifier for the user in the provider's system, if applicable.
+  string provider_email = 5; // Email address associated with the account in the provider's system.
+  string access_token = 6; // Access token provided by the OAuth provider, used for authentication and authorization.
+  string refresh_token = 7; // Refresh token provided by the OAuth provider, used to obtain new access tokens when the current one expires.
+  string token_type = 8; // Type of the token, such as "Bearer", indicating how the token should be used in HTTP headers.
+  repeated string scope = 9; // Scopes associated with the token, defining the permissions granted to the token holder, such as read or write access to specific resources.
+  google.protobuf.Timestamp expires_at = 10; // Timestamp indicating when the access token expires, used to determine if the token is still valid for making requests.
+  google.protobuf.Timestamp created_at = 11; // Timestamp indicating when the token was created, useful for auditing and record-keeping.
+  google.protobuf.Timestamp revoked_at = 12; // Timestamp indicating when the token was revoked, if applicable. This is used to track when the token is no longer valid.
+  string ip_address = 13; // IP address from which the account was created, useful for security and auditing purposes.
+  string user_agent = 14; // User agent string from the
+}
+
+// Response message for CreateAccountLocalRequest.
+message CreateAccountLocalResponse {
+  Account account = 1; // The created account details after the operation, including any generated fields like ID and timestamps.
+}
+
+// Response message for CreateAccountOAuthRequest.
+message CreateAccountOAuthResponse {
+  Account account = 1; // The created account details after the operation, including any generated fields like ID and timestamps.
 }
 
 // Request and response messages for account service operations.

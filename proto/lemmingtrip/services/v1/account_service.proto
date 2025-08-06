@@ -10,7 +10,9 @@ option swift_prefix = "LTServicesV1";
 
 service AccountService {
   // CreateAccount creates a new account with the provided details.
-  rpc CreateAccount(lemmingtrip.models.v1.CreateAccountRequest) returns (lemmingtrip.models.v1.CreateAccountResponse);
+  rpc CreateAccountLocal(lemmingtrip.models.v1.CreateAccountLocalRequest) returns (lemmingtrip.models.v1.CreateAccountLocalResponse);
+  // CreateAccountOAuth creates a new account using OAuth provider details.
+  rpc CreateAccountOAuth(lemmingtrip.models.v1.CreateAccountOAuthRequest) returns (lemmingtrip.models.v1.CreateAccountOAuthResponse);
   // GetAccount retrieves an account by its ID.
   rpc GetAccount(lemmingtrip.models.v1.GetAccountRequest) returns (lemmingtrip.models.v1.GetAccountResponse);
   // UpdateAccount updates the details of an existing account.
