@@ -10,17 +10,17 @@ option swift_prefix = "LTServicesV1";
 
 // AuditService provides methods for managing security audit logs.
 service AuditService {
-  rpc ListSecurityEvents(lemmingtrip.models.v1.ListSecurityEventsRequest) returns (lemmingtrip.models.v1.ListSecurityEventsResponse);
+  rpc ListSecurityAuditLogs(lemmingtrip.models.v1.ListSecurityAuditLogsRequest) returns (lemmingtrip.models.v1.ListSecurityAuditLogsResponse);
 
   // Create a new security event
-  rpc CreateSecurityEvent(lemmingtrip.models.v1.CreateSecurityEventRequest) returns (lemmingtrip.models.v1.CreateSecurityEventResponse);
+  rpc CreateSecurityAuditLog(lemmingtrip.models.v1.CreateSecurityAuditLogRequest) returns (lemmingtrip.models.v1.CreateSecurityAuditLogResponse);
 
   // Get a specific security event by ID
-  rpc GetSecurityEvent(lemmingtrip.models.v1.GetSecurityEventRequest) returns (lemmingtrip.models.v1.GetSecurityEventResponse);
+  rpc GetSecurityAuditLog(lemmingtrip.models.v1.GetSecurityAuditLogRequest) returns (lemmingtrip.models.v1.GetSecurityAuditLogResponse);
 
   // Delete a security event by ID
-  rpc DeleteSecurityEvent(lemmingtrip.models.v1.DeleteSecurityEventRequest) returns (lemmingtrip.models.v1.DeleteSecurityEventResponse);
+  rpc DeleteSecurityAuditLog(lemmingtrip.models.v1.DeleteSecurityAuditLogRequest) returns (lemmingtrip.models.v1.DeleteSecurityAuditLogResponse);
 
-  // Export security events based on criteria
-  rpc ExportSecurityEvents(lemmingtrip.models.v1.ExportSecurityEventsRequest) returns (lemmingtrip.models.v1.ExportSecurityEventsResponse);
+  // Export security AuditLogs based on criteria
+  rpc ExportSecurityAuditLogs(lemmingtrip.models.v1.ExportSecurityAuditLogsRequest) returns (lemmingtrip.models.v1.ExportSecurityAuditLogsResponse);
 }

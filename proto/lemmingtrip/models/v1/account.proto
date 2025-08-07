@@ -63,17 +63,14 @@ message CreateAccountLocalRequest {
 message CreateAccountOAuthRequest {
   string user_id = 1; // Identifier for the associated user, linking to the User message.
   AccountProvider account_provider = 2; // The provider through which the account was created or authenticated.
-  string provider_user_id = 4; // Unique identifier for the user in the provider's system, if applicable.
-  string provider_email = 5; // Email address associated with the account in the provider's system.
-  string access_token = 6; // Access token provided by the OAuth provider, used for authentication and authorization.
-  string refresh_token = 7; // Refresh token provided by the OAuth provider, used to obtain new access tokens when the current one expires.
-  string token_type = 8; // Type of the token, such as "Bearer", indicating how the token should be used in HTTP headers.
-  repeated string scope = 9; // Scopes associated with the token, defining the permissions granted to the token holder, such as read or write access to specific resources.
-  google.protobuf.Timestamp expires_at = 10; // Timestamp indicating when the access token expires, used to determine if the token is still valid for making requests.
-  google.protobuf.Timestamp created_at = 11; // Timestamp indicating when the token was created, useful for auditing and record-keeping.
-  google.protobuf.Timestamp revoked_at = 12; // Timestamp indicating when the token was revoked, if applicable. This is used to track when the token is no longer valid.
-  string ip_address = 13; // IP address from which the account was created, useful for security and auditing purposes.
-  string user_agent = 14; // User agent string from the
+  string provider_user_id = 3; // Unique identifier for the user in the provider's system, if applicable.
+  string provider_email = 4; // Email address associated with the account in the provider's system.
+  string access_token = 5; // Access token provided by the OAuth provider, used for authentication and authorization.
+  string refresh_token = 6; // Refresh token provided by the OAuth provider, used to obtain new access tokens when the current one expires.
+  string token_type = 7; // Type of the token, such as "Bearer", indicating how the token should be used in HTTP headers.
+  repeated string scope = 8; // Scopes associated with the token, defining the permissions granted to the token holder, such as read or write access to specific resources.
+  string ip_address = 9; // IP address from which the account was created, useful for security and auditing purposes.
+  string user_agent = 10; // User agent string from the
 }
 
 // Response message for CreateAccountLocalRequest.

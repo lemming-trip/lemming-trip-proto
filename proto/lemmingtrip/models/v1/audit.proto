@@ -38,7 +38,7 @@ message SecurityAuditLog {
 }
 
 // ListSecurityEventsRequest represents a request to list security events.
-message ListSecurityEventsRequest {
+message ListSecurityAuditLogsRequest {
   string account_id = 1; // ID of the account for which to list security events.
   int32 take = 2; // Number of security events to return in the response.
   int32 skip = 3; // Number of security events to skip in the response.
@@ -48,48 +48,53 @@ message ListSecurityEventsRequest {
 }
 
 // ListSecurityEventsResponse represents a response containing a list of security events.
-message ListSecurityEventsResponse {
-  repeated SecurityAuditLog events = 1; // List of security audit logs matching the request criteria.
+message ListSecurityAuditLogsResponse {
+  repeated SecurityAuditLog security_audit_logs = 1; // List of security audit logs matching the request criteria.
   int32 total = 2; // Total number of security events matching the request criteria, regardless of pagination.
 }
 
 // CreateSecurityEventRequest represents a request to create a new security event.
-message CreateSecurityEventRequest {
-  SecurityAuditLog event = 1; // The security audit log entry to be created.
+message CreateSecurityAuditLogRequest {
+  string account_id = 1; // ID of the account associated with the security event.
+  SecurityEventType event_type = 2; // Type of the security event.
+  SecurityEventStatus event_status = 3; // Status of the security event.
+  string ip_address = 4; // IP address from which the event originated.
+  string user_agent = 5; // User agent string of the client that triggered the event.
+  map<string, string> details = 6; // Additional details about the security event, stored as key-value pairs.
 }
 
 // CreateSecurityEventResponse represents a response to a create security event request.
-message CreateSecurityEventResponse {
+message CreateSecurityAuditLogResponse {
   SecurityAuditLog event = 1; // The created security audit log entry.
 }
 
 // GetSecurityEventRequest represents a request to retrieve a security event by its ID.
-message GetSecurityEventRequest {
+message GetSecurityAuditLogRequest {
   string id = 1; // ID of the security event to retrieve.
 }
 
 // GetSecurityEventResponse represents a response containing a security event.
-message GetSecurityEventResponse {
+message GetSecurityAuditLogResponse {
   SecurityAuditLog event = 1; // The security audit log entry retrieved by ID.
 }
 
 // DeleteSecurityEventRequest represents a request to delete a security event by its ID.
-message DeleteSecurityEventRequest {
+message DeleteSecurityAuditLogRequest {
   string id = 1; // ID of the security event to delete.
 }
 
 // DeleteSecurityEventResponse represents a response to a delete security event request.
-message DeleteSecurityEventResponse {
+message DeleteSecurityAuditLogResponse {
   bool success = 1; // Indicates whether the deletion was successful.
 }
 
-message ExportSecurityEventsRequest {
+message ExportSecurityAuditLogsRequest {
   string filter = 1; // Filter criteria for the security events, e.g., "event_type=LOGIN".
   string format = 2; // "csv", "json", etc.
 }
 
 // ExportSecurityEventsResponse represents a response containing exported security events.
-message ExportSecurityEventsResponse {
+message ExportSecurityAuditLogsResponse {
   bytes file = 1; // The exported file containing security events in the specified format.
   string filename = 2; // Name of the exported file, e.g., "security_events.csv".
 }
