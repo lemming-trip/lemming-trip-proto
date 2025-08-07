@@ -67,7 +67,7 @@ message GetMessageRequest {
 
 // Response for getting a specific message.
 message GetMessageResponse {
-  lemmingtrip.models.v1.Message message = 1; // The message that was retrieved
+  Message message = 1; // The message that was retrieved
 }
 
 // Request to list messages for a user, with pagination support.

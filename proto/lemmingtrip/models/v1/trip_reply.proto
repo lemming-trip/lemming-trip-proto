@@ -22,7 +22,7 @@ message TripReply {
   google.protobuf.Timestamp updated_at = 9; // Timestamp indicating when the reply was last updated, useful for tracking changes to the reply content.
 }
 
-message CreateReplyRequest {
+message CreateTripReplyRequest {
   string trip_id = 1; // Identifier for the associated trip, linking to the Trip message.
   string user_id = 2; // Identifier for the user who made the reply, linking to the User message.
   string text = 3; // The text content of the reply, providing the user's input or feedback on the trip.
@@ -30,50 +30,50 @@ message CreateReplyRequest {
 }
 
 // CreateReplyResponse represents the response after creating a trip reply.
-message CreateReplyResponse {
+message CreateTripReplyResponse {
   TripReply reply = 1; // The created TripReply object, containing the details of the reply.
 }
 
 // UpdateReplyRequest represents the request to update a trip reply.
-message UpdateReplyRequest {
+message UpdateTripReplyRequest {
   string id = 1; // Unique identifier for the reply to be updated.
   string text = 2; // The updated text content of the reply.
   repeated string images = 3; // Updated list of image URLs associated with the reply.
 }
 
 // UpdateReplyResponse represents the response after updating a trip reply.
-message UpdateReplyResponse {
+message UpdateTripReplyResponse {
   TripReply reply = 1; // The updated TripReply object, containing the details of the reply after the update.
 }
 
-message GetReplyRequest {
+message GetTripReplyRequest {
   string id = 1;
 }
 
 // GetReplyResponse represents the response after retrieving a trip reply.
-message GetReplyResponse {
+message GetTripReplyResponse {
   TripReply reply = 1; // The requested TripReply object, containing the details of the reply.
 }
 
 // DeleteReplyRequest represents the request to delete a trip reply.
-message DeleteReplyRequest {
+message DeleteTripReplyRequest {
   string id = 1; // Unique identifier for the reply to be deleted.
 }
 
 // DeleteReplyResponse represents the response after deleting a trip reply.
-message DeleteReplyResponse {
+message DeleteTripReplyResponse {
   bool success = 1; // Indicates whether the deletion was successful.
 }
 
 // ListRepliesRequest represents the request to list replies for a trip.
-message ListRepliesRequest {
+message ListTripRepliesRequest {
   string trip_id = 1; // Identifier for the trip for which replies are being requested.
   int32 take = 2; // Number of replies to return, used for pagination.
   int32 skip = 3; // Number of replies to skip, used for pagination.
 }
 
 // ListRepliesResponse represents the response after listing replies for a trip.
-message ListRepliesResponse {
+message ListTripRepliesResponse {
   repeated TripReply replies = 1; // List of TripReply objects, containing the details of the replies for the specified trip.
   int32 total = 2; // Total number of replies for the trip, useful for pagination and displaying the total count to users.
 }

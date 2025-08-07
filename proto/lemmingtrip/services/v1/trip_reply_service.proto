@@ -11,14 +11,14 @@ option swift_prefix = "LTServicesV1";
 // TripRepliesService provides methods to manage trip replies.
 // It allows creating, retrieving, updating, deleting, and listing trip replies.
 service TripRepliesService {
-  // CreateReply creates a new trip reply.
-  rpc CreateReply(lemmingtrip.models.v1.CreateReplyRequest) returns (lemmingtrip.models.v1.CreateReplyResponse);
-  // GetReply retrieves a trip reply by its ID.
-  rpc GetReply(lemmingtrip.models.v1.GetReplyRequest) returns (lemmingtrip.models.v1.GetReplyResponse);
-  // UpdateReply updates an existing trip reply.
-  rpc UpdateReply(lemmingtrip.models.v1.UpdateReplyRequest) returns (lemmingtrip.models.v1.UpdateReplyResponse);
-  // DeleteReply deletes a trip reply by its ID.
-  rpc DeleteReply(lemmingtrip.models.v1.DeleteReplyRequest) returns (lemmingtrip.models.v1.DeleteReplyResponse);
+  // CreateTripReply creates a new trip reply.
+  rpc CreateTripReply(lemmingtrip.models.v1.CreateTripReplyRequest) returns (lemmingtrip.models.v1.CreateTripReplyResponse);
+  // GetTripReply retrieves a trip reply by its ID.
+  rpc GetTripReply(lemmingtrip.models.v1.GetTripReplyRequest) returns (lemmingtrip.models.v1.GetTripReplyResponse);
+  // UpdateTripReply updates an existing trip reply.
+  rpc UpdateTripReply(lemmingtrip.models.v1.UpdateTripReplyRequest) returns (lemmingtrip.models.v1.UpdateTripReplyResponse);
+  // DeleteTripReply deletes a trip reply by its ID.
+  rpc DeleteTripReply(lemmingtrip.models.v1.DeleteTripReplyRequest) returns (lemmingtrip.models.v1.DeleteTripReplyResponse);
   // ListReplies lists all replies for a specific trip.ß
-  rpc ListReplies(lemmingtrip.models.v1.ListRepliesRequest) returns (lemmingtrip.models.v1.ListRepliesResponse);
+  rpc ListTripReplies(lemmingtrip.models.v1.ListTripRepliesRequest) returns (lemmingtrip.models.v1.ListTripRepliesResponse);
 }

@@ -157,7 +157,7 @@ message SearchTripsRequest {
 
 // ListUserTripsResponse is the response message containing a list of trips created by a specific user.
 message SearchTripsResponse {
-  repeated lemmingtrip.models.v1.Trip trips = 1; // List of trips matching the search criteria
+  repeated Trip trips = 1; // List of trips matching the search criteria
   int32 total = 2; // Total number of trips matching the search criteria, useful for pagination
 }
 

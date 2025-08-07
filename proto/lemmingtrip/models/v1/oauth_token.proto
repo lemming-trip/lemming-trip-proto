@@ -40,7 +40,7 @@ message CreateTokenRequest {
 
 // CreateTokenResponse is used to return the newly created OAuth token.
 message CreateTokenResponse {
-  lemmingtrip.models.v1.OAuthToken token = 1; // The newly created OAuth token, represented by an OAuthToken message.
+  OAuthToken token = 1; // The newly created OAuth token, represented by an OAuthToken message.
 }
 
 // GetTokenRequest is used to retrieve a specific OAuth token by its ID.
@@ -50,7 +50,7 @@ message GetTokenRequest {
 
 // GetTokenResponse is used to return the OAuth token that matches the requested ID.
 message GetTokenResponse {
-  lemmingtrip.models.v1.OAuthToken token = 1; // The OAuth token that matches the requested ID, represented by an OAuthToken message.
+  OAuthToken token = 1; // The OAuth token that matches the requested ID, represented by an OAuthToken message.
 }
 
 // RefreshTokenRequest is used to request a new access token using a refresh token.
@@ -60,7 +60,7 @@ message RefreshTokenRequest {
 
 // RefreshTokenResponse is used to return the new access token after refreshing.
 message RefreshTokenResponse {
-  lemmingtrip.models.v1.OAuthToken token = 1; // The new OAuth token after refreshing, represented by an OAuthToken message.
+  OAuthToken token = 1; // The new OAuth token after refreshing, represented by an OAuthToken message.
 }
 
 // ValidateTokenRequest is used to validate an access token.
@@ -71,7 +71,7 @@ message ValidateTokenRequest {
 // ValidateTokenResponse is used to return the validation result of an access token.
 message ValidateTokenResponse {
   bool valid = 1; // Indicates whether the access token is valid or not.
-  lemmingtrip.models.v1.OAuthToken token = 2; // The OAuth token that was validated, represented by an OAuthToken message. This may be null if the token is invalid.
+  OAuthToken token = 2; // The OAuth token that was validated, represented by an OAuthToken message. This may be null if the token is invalid.
 }
 
 // RevokeTokenRequest is used to revoke a specific OAuth token by its ID.
@@ -104,7 +104,7 @@ message ListTokensRequest {
 
 // ListTokensResponse is used to return a list of OAuth tokens along with pagination information.
 message ListTokensResponse {
-  repeated lemmingtrip.models.v1.OAuthToken tokens = 1; // The list of OAuth tokens matching the request, represented by repeated OAuthToken messages.
+  repeated OAuthToken tokens = 1; // The list of OAuth tokens matching the request, represented by repeated OAuthToken messages.
   int32 total = 2; //
 }
 
@@ -118,7 +118,7 @@ message ListUserTokensRequest {
 
 // ListUserTokensResponse is used to return a list of OAuth tokens for a specific user along with pagination information.
 message ListUserTokensResponse {
-  repeated lemmingtrip.models.v1.OAuthToken tokens = 1; // The list of OAuth tokens for the specified user, represented by repeated OAuthToken messages.
+  repeated OAuthToken tokens = 1; // The list of OAuth tokens for the specified user, represented by repeated OAuthToken messages.
   int32 total = 2; // The total number of tokens for the user, used for pagination and to inform clients about the total available tokens.
 }
 
@@ -129,5 +129,5 @@ message GetActiveTokensRequest {
 
 // GetActiveTokensResponse is used to return a list of active OAuth tokens for a specific user.
 message GetActiveTokensResponse {
-  repeated lemmingtrip.models.v1.OAuthToken tokens = 1; // The list of active OAuth tokens for the specified user, represented by repeated OAuthToken messages.
+  repeated OAuthToken tokens = 1; // The list of active OAuth tokens for the specified user, represented by repeated OAuthToken messages.
 }
