@@ -31,13 +31,36 @@ message GdprConsent {
   google.protobuf.Timestamp created_at = 8; // Timestamp indicating when the consent record was created, useful for auditing and record-keeping.
 }
 
+// CreateGdprConsentRequest is used to create a new GDPR consent record.
+message CreateGdprConsentRequest {
+  string user_id = 1; // Identifier for the user who is granting the consent.
+  GdprConsentType consent_type = 2; // The type of consent being granted.
+  bool is_granted = 3; // Indicates whether the consent is granted or revoked.
+}
+
+// CreateGdprConsentResponse is used to return the newly created GDPR consent record.
+message CreateGdprConsentResponse {
+  GdprConsent consent = 1; // The newly created consent record, represented by a GdprConsent message.
+}
+
+// UpdateGdprConsentRequest is used to update an existing GDPR consent record.
+message UpdateGdprConsentRequest {
+  string consent_id = 1; // Identifier for the consent to update, linking to the GdprConsent message.
+  bool is_granted = 2; // Indicates whether the consent is granted or revoked.
+}
+
+// UpdateGdprConsentResponse is used to return the updated GDPR consent record.
+message UpdateGdprConsentResponse {
+  GdprConsent consent = 1; // The updated consent record, represented by a GdprConsent message.
+}
+
 // UserConsent represents a user's consent record, including the user information and consent details.
-message ListConsentsRequest {
+message ListGdprConsentsRequest {
   string user_id = 1; // Identifier for the user whose consents are being requested. This links to the User message.
 }
 
 // UserConsent represents a user's consent record, including the user information and consent details.
-message ListConsentsResponse {
+message ListGdprConsentsResponse {
   repeated GdprConsent consents = 1; // List of consents granted by the user, each represented by a UserConsent message.
 }
 
@@ -47,17 +70,17 @@ message GetGdprConsentRequest {
 }
 
 // GetGdprConsentResponse is used to return the consent record that matches the requested ID.
-message GetGdprConsertResponse {
+message GetGdprConsentResponse {
   GdprConsent consent = 1; // The consent record that matches the requested ID, represented by a GdprConsent message.
 }
 
 // RevokeConsentRequest is used to request the revocation of a specific consent by its ID.
 // It includes the consent ID to identify which consent should be revoked.
-message RevokeConsentRequest {
+message RevokeGdprConsentRequest {
   string consent_id = 1; // Identifier for the consent that is being revoked, linking to the GdprConsent message.
 }
 
 // RevokeConsentResponse is used to return the consent record that has been revoked.
-message RevokeConsentResponse {
+message RevokeGdprConsentResponse {
   GdprConsent consent = 1; // The consent record that has been revoked, represented by a GdprConsent message.
 }

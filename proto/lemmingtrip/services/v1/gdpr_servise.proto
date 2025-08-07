@@ -10,10 +10,14 @@ option swift_prefix = "LTServicesV1";
 
 // The GdprService provides methods for managing user consents in compliance with GDPR regulations.
 service GdprService {
+  // CreateGdprConsent creates a new GDPR consent record for a user.
+  rpc CreateGdprConsent(lemmingtrip.models.v1.CreateGdprConsentRequest) returns (lemmingtrip.models.v1.CreateGdprConsentResponse);
+  // UpdateGdprConsent updates an existing GDPR consent record.
+  rpc UpdateGdprConsent(lemmingtrip.models.v1.UpdateGdprConsentRequest) returns (lemmingtrip.models.v1.UpdateGdprConsentResponse);
   // ListConsents retrieves all consents granted by a specific user.
-  rpc ListConsents(lemmingtrip.models.v1.ListConsentsRequest) returns (lemmingtrip.models.v1.ListConsentsResponse);
+  rpc ListGdprConsents(lemmingtrip.models.v1.ListGdprConsentsRequest) returns (lemmingtrip.models.v1.ListGdprConsentsResponse);
   // GetGdprConsent retrieves a specific consent by its ID.
-  rpc GrantConsent(lemmingtrip.models.v1.GetGdprConsentRequest) returns (lemmingtrip.models.v1.GetGdprConsertResponse);
+  rpc GetGdprConsent(lemmingtrip.models.v1.GetGdprConsentRequest) returns (lemmingtrip.models.v1.GetGdprConsentResponse);
   // RevokeConsent revokes a specific consent by its ID.
-  rpc RevokeConsent(lemmingtrip.models.v1.RevokeConsentRequest) returns (lemmingtrip.models.v1.RevokeConsentResponse);
+  rpc RevokeGdprConsent(lemmingtrip.models.v1.RevokeGdprConsentRequest) returns (lemmingtrip.models.v1.RevokeGdprConsentResponse);
 }
