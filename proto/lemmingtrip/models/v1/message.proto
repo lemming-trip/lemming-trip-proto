@@ -27,7 +27,10 @@ message Message {
 
 // Chat represents a chat session between users.
 message SendMessageRequest {
-  Message message = 1; // The message to be sent
+  string sender_id = 1; // UUID of the user who sent the message
+  string recipient_id = 2; // UUID of the user who received the message
+  string content = 3; // Text content of the message
+  repeated string attachments = 4; // List of attachment URLs or IDs
 }
 
 // Response for sending a message.
