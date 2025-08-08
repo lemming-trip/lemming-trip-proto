@@ -1,13 +1,8 @@
 syntax = "proto3";
 
-package lemmingtrip.models.v1;
+package lemmingtrip.user;
 
 import "google/protobuf/timestamp.proto";
-
-option go_package = "github.com/lemming-trip/lemming-trip-proto/models/v1;modelsv1";
-option java_multiple_files = true;
-option java_package = "com.lemmingtrip.models.v1";
-option swift_prefix = "LTModelsV1";
 
 // UserSession represents a user session in the system.
 // It contains information about the session, including the user, device, and session details.
@@ -43,7 +38,7 @@ message GetSessionRequest {
 
 // GetSessionResponse contains the user session details for a specific request.
 message GetSessionResponse {
-  lemmingtrip.models.v1.UserSession session = 1; // The user session details for the requested ID
+  UserSession session = 1; // The user session details for the requested ID
 }
 
 // GetSessionResponse contains the user session details for a specific request.
@@ -82,7 +77,7 @@ message CreateSessionRequest {
 
 // CreateSessionResponse contains the newly created user session.
 message CreateSessionResponse {
-  lemmingtrip.models.v1.UserSession session = 1; // The newly created user session, including all relevant details such as ID, user ID, account ID, session token, IP address, user agent, device info, expiration time, last activity time, creation time, revocation time, and active status.
+  UserSession session = 1; // The newly created user session, including all relevant details such as ID, user ID, account ID, session token, IP address, user agent, device info, expiration time, last activity time, creation time, revocation time, and active status.
 }
 
 // RefreshSessionRequest is used to refresh an existing user session.
@@ -92,7 +87,7 @@ message RefreshSessionRequest {
 
 // RefreshSessionResponse contains the refreshed user session.
 message RefreshSessionResponse {
-  lemmingtrip.models.v1.UserSession session = 1; // The refreshed user session, including updated details such as expiration time and last activity time.
+  UserSession session = 1; // The refreshed user session, including updated details such as expiration time and last activity time.
 }
 
 // ValidateSessionRequest is used to validate a user session based on its session token.

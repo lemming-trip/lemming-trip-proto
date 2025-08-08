@@ -1,0 +1,21 @@
+syntax = "proto3";
+package lemmingtrip.audit;
+
+import "lemmingtrip/audit/audit.proto";
+
+// AuditService provides methods for managing security audit logs.
+service AuditService {
+  rpc ListSecurityAuditLogs(lemmingtrip.audit.ListSecurityAuditLogsRequest) returns (lemmingtrip.audit.ListSecurityAuditLogsResponse);
+
+  // Create a new security event
+  rpc CreateSecurityAuditLog(lemmingtrip.audit.CreateSecurityAuditLogRequest) returns (lemmingtrip.audit.CreateSecurityAuditLogResponse);
+
+  // Get a specific security event by ID
+  rpc GetSecurityAuditLog(lemmingtrip.audit.GetSecurityAuditLogRequest) returns (lemmingtrip.audit.GetSecurityAuditLogResponse);
+
+  // Delete a security event by ID
+  rpc DeleteSecurityAuditLog(lemmingtrip.audit.DeleteSecurityAuditLogRequest) returns (lemmingtrip.audit.DeleteSecurityAuditLogResponse);
+
+  // Export security AuditLogs based on criteria
+  rpc ExportSecurityAuditLogs(lemmingtrip.audit.ExportSecurityAuditLogsRequest) returns (lemmingtrip.audit.ExportSecurityAuditLogsResponse);
+}

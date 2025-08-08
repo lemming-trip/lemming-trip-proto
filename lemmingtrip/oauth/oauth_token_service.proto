@@ -1,0 +1,27 @@
+syntax = "proto3";
+package lemmingtrip.oauth;
+
+import "lemmingtrip/oauth/oauth_token.proto";
+
+// OAuthTokensService provides methods for managing OAuth tokens, including creation, retrieval, refreshing, validation, and revocation.
+// It allows clients to securely manage access tokens for user authentication and authorization.
+service OAuthTokensService {
+  // CreateToken creates a new OAuth token for a user, client, and requested scopes.
+  rpc CreateToken(CreateTokenRequest) returns (CreateTokenResponse);
+  // GetToken retrieves an OAuth token by its ID.
+  rpc GetToken(GetTokenRequest) returns (GetTokenResponse);
+  // RefreshToken requests a new access token using a refresh token.
+  rpc RefreshToken(RefreshTokenRequest) returns (RefreshTokenResponse);
+  // ValidateToken checks if an access token is valid and returns the token details if valid.
+  rpc ValidateToken(ValidateTokenRequest) returns (ValidateTokenResponse);
+  // RevokeToken revokes a specific OAuth token by its ID, making it no longer valid for use.
+  rpc RevokeToken(RevokeTokenRequest) returns (RevokeTokenResponse);
+  // RevokeAllTokens revokes all tokens associated with a specific user and client, ensuring that all sessions are invalidated.
+  rpc RevokeAllTokens(RevokeAllTokensRequest) returns (RevokeAllTokensResponse);
+  // ListTokens retrieves a list of OAuth tokens with pagination and filtering options.
+  rpc ListTokens(ListTokensRequest) returns (ListTokensResponse);
+  // ListUserTokens retrieves a list of OAuth tokens for a specific user with pagination options.
+  rpc ListUserTokens(ListUserTokensRequest) returns (ListUserTokensResponse);
+  // GetActiveTokens retrieves all active tokens for a specific user, allowing clients to manage user sessions effectively.
+  rpc GetActiveTokens(GetActiveTokensRequest) returns (GetActiveTokensResponse);
+}

@@ -1,0 +1,36 @@
+syntax = "proto3";
+
+package lemmingtrip.account;
+
+import "lemmingtrip/account/account.proto";
+
+service AccountService {
+  // CreateAccount creates a new account with the provided details.
+  rpc CreateAccountLocal(CreateAccountLocalRequest) returns (CreateAccountLocalResponse);
+  // CreateAccountOAuth creates a new account using OAuth provider details.
+  rpc CreateAccountOAuth(CreateAccountOAuthRequest) returns (CreateAccountOAuthResponse);
+  // GetAccount retrieves an account by its ID.
+  rpc GetAccount(GetAccountRequest) returns (GetAccountResponse);
+  // UpdateAccount updates the details of an existing account.
+  rpc UpdateAccount(UpdateAccountRequest) returns (UpdateAccountResponse);
+  // DeleteAccount removes an account by its ID.
+  rpc DeleteAccount(DeleteAccountRequest) returns (DeleteAccountResponse);
+  // ListAccounts retrieves a list of accounts with pagination and filtering options.
+  rpc ListAccounts(ListAccountsRequest) returns (ListAccountsResponse);
+  // ActivateAccount activates an account using the provided activation code.
+  rpc ActivateAccount(ActivateAccountRequest) returns (ActivateAccountResponse);
+  // VerifyEmail verifies the email address associated with an account.
+  rpc VerifyEmail(VerifyEmailRequest) returns (VerifyEmailResponse);
+  // ResetPassword initiates a password reset process for an account.
+  rpc ResetPassword(ResetPasswordRequest) returns (ResetPasswordResponse);
+  // ChangePassword changes the password of an account.
+  rpc EnableMFA(EnableMFARequest) returns (EnableMFAResponse);
+  // DisableMFA disables multi-factor authentication for an account.
+  rpc DisableMFA(DisableMFARequest) returns (DisableMFAResponse);
+  // BanAccount bans an account, preventing it from logging in or performing actions.
+  rpc BanAccount(BanAccountRequest) returns (BanAccountResponse);
+  // UnbanAccount lifts the ban on an account, allowing it to log in and perform actions again.
+  rpc UnbanAccount(UnbanAccountRequest) returns (UnbanAccountResponse);
+  // ListUserAccounts retrieves a list of accounts associated with a user, with pagination and filtering options.
+  rpc ListUserAccounts(ListUserAccountsRequest) returns (ListUserAccountsResponse);
+}

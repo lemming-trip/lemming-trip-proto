@@ -1,13 +1,8 @@
 syntax = "proto3";
 
-package lemmingtrip.models.v1;
+package lemmingtrip.account;
 
 import "google/protobuf/timestamp.proto";
-
-option go_package = "github.com/lemming-trip/lemming-trip-proto/models/v1;modelsv1";
-option java_multiple_files = true;
-option java_package = "com.lemmingtrip.models.v1";
-option swift_prefix = "LTModelsV1";
 
 // AccountProvider defines the different providers for user accounts.
 // This enum is used to identify the source of the account, such as local, Google,

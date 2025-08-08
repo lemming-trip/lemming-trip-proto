@@ -1,0 +1,18 @@
+syntax = "proto3";
+package lemmingtrip.gdpr;
+
+import "lemmingtrip/gdpr/gdpr.proto";
+
+// The GdprService provides methods for managing user consents in compliance with GDPR regulations.
+service GdprService {
+  // CreateGdprConsent creates a new GDPR consent record for a user.
+  rpc CreateGdprConsent(CreateGdprConsentRequest) returns (CreateGdprConsentResponse);
+  // UpdateGdprConsent updates an existing GDPR consent record.
+  rpc UpdateGdprConsent(UpdateGdprConsentRequest) returns (UpdateGdprConsentResponse);
+  // ListConsents retrieves all consents granted by a specific user.
+  rpc ListGdprConsents(ListGdprConsentsRequest) returns (ListGdprConsentsResponse);
+  // GetGdprConsent retrieves a specific consent by its ID.
+  rpc GetGdprConsent(GetGdprConsentRequest) returns (GetGdprConsentResponse);
+  // RevokeConsent revokes a specific consent by its ID.
+  rpc RevokeGdprConsent(RevokeGdprConsentRequest) returns (RevokeGdprConsentResponse);
+}

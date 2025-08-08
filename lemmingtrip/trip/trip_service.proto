@@ -1,0 +1,51 @@
+syntax = "proto3";
+package lemmingtrip.trip;
+
+import "lemmingtrip/trip/trip.proto";
+
+service TripService {
+  // CreateTrip creates a new trip with the provided details.
+  rpc CreateTrip(CreateTripRequest) returns (CreateTripResponse);
+  // GetTrip retrieves a trip by its ID.
+  rpc GetTrip(GetTripRequest) returns (GetTripResponse);
+  // UpdateTrip updates an existing trip with the provided details.
+  rpc UpdateTrip(UpdateTripRequest) returns (UpdateTripResponse);
+  // DeleteTrip removes a trip by its ID.
+  rpc DeleteTrip(DeleteTripRequest) returns (DeleteTripResponse);
+  // ListTrips retrieves a list of trips with pagination and filtering options.
+  rpc ListTrips(ListTripsRequest) returns (ListTripsResponse);
+
+  // LikeTrip allows a user to like a trip.
+  rpc LikeTrip(LikeTripRequest) returns (LikeTripResponse);
+  // UnlikeTrip allows a user to remove their like from a trip.
+  rpc UnlikeTrip(UnlikeTripRequest) returns (UnlikeTripResponse);
+  // ListTripLikers retrieves a list of users who liked a specific trip.
+  rpc ListTripLikers(ListTripLikersRequest) returns (ListTripLikersResponse);
+  // IsTripLikedByUser checks if a specific user has liked a trip.
+  rpc IsTripLikedByUser(IsTripLikedByUserRequest) returns (IsTripLikedByUserResponse);
+
+  // RateTrip allows a user to rate a trip.
+  rpc RateTrip(RateTripRequest) returns (RateTripResponse);
+  // UpdateTripRating allows a user to update their rating for a trip.
+  rpc GetUserTripRating(GetUserTripRatingRequest) returns (GetUserTripRatingResponse);
+  // DeleteTripRating allows a user to remove their rating for a trip.
+  rpc ListTripRatings(ListTripRatingsRequest) returns (ListTripRatingsResponse);
+
+  // LogTripView logs a view of a trip by a user or an anonymous viewer.
+  rpc LogTripView(LogTripViewRequest) returns (LogTripViewResponse);
+  // GetTripViewsCount retrieves the total number of views for a specific trip.
+  rpc GetTripViewsCount(GetTripViewsCountRequest) returns (GetTripViewsCountResponse);
+  // ListTripViewers retrieves a list of users who have viewed a specific trip.
+  rpc ListTripViewers(ListTripViewersRequest) returns (ListTripViewersResponse);
+
+  // SearchTrips allows users to search for trips based on various criteria.
+  rpc SearchTrips(SearchTripsRequest) returns (SearchTripsResponse);
+  // ListUserTrips retrieves a list of trips created by a specific user.
+  rpc RestoreTrip(RestoreTripRequest) returns (RestoreTripResponse);
+  // FeatureTrip allows a user to feature or unfeature a trip.
+  rpc FeatureTrip(FeatureTripRequest) returns (FeatureTripResponse);
+  // GetTripStats retrieves statistics for a specific trip, including likes, views, and ratings.
+  rpc GetTripStats(GetTripStatsRequest) returns (GetTripStatsResponse);
+  // BatchDeleteTrips allows for the deletion of multiple trips in a single request.
+  rpc BatchDeleteTrips(BatchDeleteTripsRequest) returns (BatchDeleteTripsResponse);
+}

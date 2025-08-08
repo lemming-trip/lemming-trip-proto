@@ -1,0 +1,22 @@
+syntax = "proto3";
+
+package lemmingtrip.trip;
+
+import "lemmingtrip/trip/trip_comment.proto";
+
+service TripCommentsService {
+  // Create a new trip comment
+  rpc CreateTripComment(CreateTripCommentRequest) returns (CreateTripCommentResponse);
+  // Get a specific trip comment by ID
+  rpc GetComment(GetCommentRequest) returns (GetCommentResponse);
+  // Update an existing trip comment
+  rpc UpdateTripComment(UpdateTripCommentRequest) returns (UpdateTripCommentResponse);
+  // Delete a trip comment by ID
+  rpc DeleteComment(DeleteCommentRequest) returns (DeleteCommentResponse);
+  // List comments for a specific trip
+  rpc ListComments(ListCommentsRequest) returns (ListCommentsResponse);
+  // Mark a comment as read
+  rpc MarkCommentAsRead(MarkCommentAsReadRequest) returns (MarkCommentAsReadResponse);
+  // List unread comments for a user
+  rpc ListUnreadComments(ListUnreadCommentsRequest) returns (ListUnreadCommentsResponse);
+}

@@ -1,20 +1,15 @@
 syntax = "proto3";
 
-package lemmingtrip.models.v1;
+package lemmingtrip.trip;
 
 import "google/protobuf/timestamp.proto";
-
-option go_package = "github.com/lemming-trip/lemming-trip-proto/models/v1;modelsv1";
-option java_multiple_files = true;
-option java_package = "com.lemmingtrip.models.v1";
-option swift_prefix = "LTModelsV1";
 
 // TripType defines the different types of trips.
 enum TripType {
   TRIP_TYPE_UNSPECIFIED = 0; // Default value, should not be used in practice.
   TRIP_TYPE_INDIVIDUAL = 1; // Individual trips taken by a single user, not involving any group or team.
   TRIP_TYPE_GROUP = 2; // Group trips involving multiple users, typically organized around a common goal or destination.
-  TRIP_TYPE_NDIVIDUAL_OR_GROUP = 3; // Trips that can be either individual or group, allowing flexibility in participation.
+  TRIP_TYPE_INDIVIDUAL_OR_GROUP = 3; // Trips that can be either individual or group, allowing flexibility in participation.
 }
 
 // TripSearchType defines the different search types for trips.

@@ -1,0 +1,22 @@
+syntax = "proto3";
+
+package lemmingtrip.message;
+
+import "lemmingtrip/message/message.proto";
+
+// MessageService provides methods for sending, editing, deleting, and retrieving messages.
+// It also includes methods for listing messages and marking them as read.
+service MessageService {
+  // SendMessage sends a new message to the recipient.
+  rpc SendMessage(lemmingtrip.message.SendMessageRequest) returns (lemmingtrip.message.SendMessageResponse);
+  // EditMessage edits an existing message by its ID.
+  rpc EditMessage(lemmingtrip.message.EditMessageRequest) returns (lemmingtrip.message.EditMessageResponse);
+  // DeleteMessage deletes a message by its ID.
+  rpc DeleteMessage(lemmingtrip.message.DeleteMessageRequest) returns (lemmingtrip.message.DeleteMessageResponse);
+  // GetMessage retrieves a specific message by its ID.
+  rpc GetMessage(lemmingtrip.message.GetMessageRequest) returns (lemmingtrip.message.GetMessageResponse);
+  // ListMessages retrieves a list of messages with pagination and filtering options.
+  rpc ListMessages(lemmingtrip.message.ListMessagesRequest) returns (lemmingtrip.message.ListMessagesResponse);
+  // MarkAsRead marks a message as read by its ID.
+  rpc MarkAsRead(lemmingtrip.message.MarkAsReadRequest) returns (lemmingtrip.message.MarkAsReadResponse);
+}

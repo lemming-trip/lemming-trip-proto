@@ -1,0 +1,19 @@
+syntax = "proto3";
+package lemmingtrip.trip;
+
+import "lemmingtrip/trip/trip_reply.proto";
+
+// TripRepliesService provides methods to manage trip replies.
+// It allows creating, retrieving, updating, deleting, and listing trip replies.
+service TripRepliesService {
+  // CreateTripReply creates a new trip reply.
+  rpc CreateTripReply(CreateTripReplyRequest) returns (CreateTripReplyResponse);
+  // GetTripReply retrieves a trip reply by its ID.
+  rpc GetTripReply(GetTripReplyRequest) returns (GetTripReplyResponse);
+  // UpdateTripReply updates an existing trip reply.
+  rpc UpdateTripReply(UpdateTripReplyRequest) returns (UpdateTripReplyResponse);
+  // DeleteTripReply deletes a trip reply by its ID.
+  rpc DeleteTripReply(DeleteTripReplyRequest) returns (DeleteTripReplyResponse);
+  // ListReplies lists all replies for a specific trip.ß
+  rpc ListTripReplies(ListTripRepliesRequest) returns (ListTripRepliesResponse);
+}
