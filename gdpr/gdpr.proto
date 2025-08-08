@@ -17,7 +17,7 @@ enum GdprConsentType {
 // It includes the type of consent, whether it is granted or revoked, and timestamps for when the consent was granted or revoked.
 message GdprConsent {
   string id = 1; // Unique identifier for the consent record, typically a UUID.
-  string user_id = 2; // Identifier for the user who granted the consent, linking to the User message.
+  string identity_id = 2; // Identifier for the user who granted the consent, linking to the User message.
   GdprConsentType consent_type = 3; // The type of consent being granted, such as marketing, analytics, or cookies.
   bool is_granted = 4; // Indicates whether the consent is granted (true) or revoked (false).
   google.protobuf.Timestamp granted_at = 5; // Timestamp indicating when the consent was granted, useful for tracking when the user agreed to the terms.
@@ -28,7 +28,7 @@ message GdprConsent {
 
 // CreateGdprConsentRequest is used to create a new GDPR consent record.
 message CreateGdprConsentRequest {
-  string user_id = 1; // Identifier for the user who is granting the consent.
+  string identity_id = 1; // Identifier for the user who is granting the consent.
   GdprConsentType consent_type = 2; // The type of consent being granted.
   bool is_granted = 3; // Indicates whether the consent is granted or revoked.
 }
@@ -51,7 +51,7 @@ message UpdateGdprConsentResponse {
 
 // UserConsent represents a user's consent record, including the user information and consent details.
 message ListGdprConsentsRequest {
-  string user_id = 1; // Identifier for the user whose consents are being requested. This links to the User message.
+  string identity_id = 1; // Identifier for the user whose consents are being requested. This links to the User message.
 }
 
 // UserConsent represents a user's consent record, including the user information and consent details.

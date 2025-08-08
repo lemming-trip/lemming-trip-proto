@@ -8,7 +8,7 @@ import "google/protobuf/timestamp.proto";
 message TripReply {
   string id = 1; // Unique identifier for the reply, typically a UUID.
   string trip_id = 2; // Identifier for the associated trip, linking to the Trip message.
-  string user_id = 3; // Identifier for the user who made the reply, linking to the User message.
+  string identity_id = 3; // Identifier for the user who made the reply, linking to the User message.
   string text = 4; // The text content of the reply, providing the user's input or feedback on the trip.
   repeated string images = 5; // List of image URLs associated with the reply, allowing users to share visual content related to the trip.
   bool is_read = 6; // Indicates whether the reply has been read, useful for tracking user engagement with trip replies.
@@ -19,7 +19,7 @@ message TripReply {
 
 message CreateTripReplyRequest {
   string trip_id = 1; // Identifier for the associated trip, linking to the Trip message.
-  string user_id = 2; // Identifier for the user who made the reply, linking to the User message.
+  string identity_id = 2; // Identifier for the user who made the reply, linking to the User message.
   string text = 3; // The text content of the reply, providing the user's input or feedback on the trip.
   repeated string images = 4; // List of image URLs associated with the reply, allowing users to share visual content related to the trip.
 }

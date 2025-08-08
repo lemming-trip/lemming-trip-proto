@@ -4,125 +4,330 @@ package lemmingtrip.oauth;
 
 import "google/protobuf/timestamp.proto";
 
-// OAuthToken represents an OAuth token used for authentication and authorization.
-// It includes details such as the token ID, associated account and user IDs, client ID,
-// access and refresh tokens, token type, scopes, expiration timestamps, and metadata.
-// The token can be used to access protected resources and perform actions on behalf of the user.
+// Провайдеры OAuth (те же, что в identity.proto)
+enum OAuthProvider {
+  OAUTH_PROVIDER_UNSPECIFIED = 0;
+  OAUTH_PROVIDER_GOOGLE = 1;
+  OAUTH_PROVIDER_MICROSOFT = 2;
+  OAUTH_PROVIDER_APPLE = 3;
+  OAUTH_PROVIDER_GITHUB = 4;
+  OAUTH_PROVIDER_FACEBOOK = 5;
+  OAUTH_PROVIDER_DISCORD = 6;
+  OAUTH_PROVIDER_LINKEDIN = 7;
+  OAUTH_PROVIDER_TWITTER = 8;
+  OAUTH_PROVIDER_YANDEX = 9;
+}
+
+// Типы токенов от внешних провайдеров
+enum TokenType {
+  _TOKEN_TYPE_UNSPECIFIED = 0;
+  _TOKEN_TYPE_ACCESS = 1;    // Access token от провайдера
+  _TOKEN_TYPE_REFRESH = 2;   // Refresh token от провайдера
+  _TOKEN_TYPE_ID = 3;        // ID token (OpenID Connect)
+}
+
+// Статус токена
+enum TokenStatus {
+  TOKEN_STATUS_UNSPECIFIED = 0;
+  TOKEN_STATUS_ACTIVE = 1;      // Активный токен
+  TOKEN_STATUS_EXPIRED = 2;     // Истекший токен
+  TOKEN_STATUS_REVOKED = 3;     // Отозванный токен
+  TOKEN_STATUS_INVALID = 4;     // Недействительный токен
+}
+
+// Токен от внешнего OAuth провайдера
 message OAuthToken {
-  string id = 1; // Unique identifier for the OAuth token, typically a UUID.
-  string account_id = 2; // Identifier for the account associated with the token, linking to the Account message.
-  string user_id = 3; // Identifier for the user associated with the token, linking to the User message.
-  string client_id = 4; // Identifier for the client application that requested the token, linking to the Client message.
-  string access_token = 5; // The access token used for authenticating API requests, typically a JWT or opaque token.
-  string refresh_token = 6; // The refresh token used to obtain a new access token when the current one expires, enhancing security and usability.
-  string token_type = 7; // The type of token, such as "Bearer", indicating how the token should be used in HTTP headers.
-  repeated string scope = 8; // The scopes associated with the token, defining the permissions granted to the token holder, such as read or write access to specific resources.
-  google.protobuf.Timestamp expires_at = 9; // Timestamp indicating when the access token expires, used to determine if the token is still valid for making requests.
-  google.protobuf.Timestamp created_at = 10; // Timestamp indicating when the token was created, useful for auditing and record-keeping.
-  google.protobuf.Timestamp revoked_at = 11; // Timestamp indicating when the token was revoked, if applicable. This is used to track when the token is no longer valid.
+  string id = 1;                              // Уникальный ID записи в нашей БД
+  string identity_id = 2;                     // ID пользователя в нашей системе
+  OAuthProvider provider = 3;                 // Провайдер (Google, Microsoft, etc.)
+  TokenType token_type = 4;                   // Тип токена
+
+  // Данные токена (зашифрованы в БД)
+  string encrypted_token = 5;                 // Зашифрованный токен
+  string token_hash = 6;                      // Хеш токена для поиска
+
+  // Метаданные токена
+  repeated string scopes = 7;                 // Разрешения, полученные от провайдера
+  google.protobuf.Timestamp expires_at = 8;  // Когда истекает токен
+  google.protobuf.Timestamp issued_at = 9;   // Когда был выдан токен
+
+  // Информация от провайдера
+  string provider_user_id = 10;               // ID пользователя у провайдера
+  string provider_email = 12;                 // Email у провайдера
+  string provider_name = 13;                  // Имя пользователя у провайдера
+
+  // Аудит
+  TokenStatus status = 14;                    // Статус токена
+  google.protobuf.Timestamp created_at = 15;  // Когда сохранен в нашей БД
+  google.protobuf.Timestamp updated_at = 16;  // Когда последний раз обновлен
+  google.protobuf.Timestamp last_used_at = 17; // Когда последний раз использовался
+  google.protobuf.Timestamp revoked_at = 18;  // Когда был отозван
+
+  // Контекст получения токена
+  string ip_address = 20;                     // IP адрес при получении
+  string user_agent = 21;                     // User Agent при получении
+  string device_id = 22;                      // ID устройства
+
+  // Дополнительные данные от провайдера
+  map<string, string> provider_data = 23;     // Дополнительная информация от провайдера
 }
 
-// CreateTokenRequest is used to create a new OAuth token.
-// It includes the account ID, user ID, client ID, requested scopes, and metadata such as IP address and user agent.
-message CreateTokenRequest {
-  string account_id = 1; // Identifier for the account associated with the token, linking to the Account message.
-  string user_id = 2; // Identifier for the user associated with the token, linking to the User message.
-  string client_id = 3; // Identifier for the client application that requested the token, linking to the Client message.
-  repeated string scope = 4; // The scopes requested for the token, defining the permissions granted to the token holder.
-  string ip_address = 5; // IP address from which the token is being created, useful for security and auditing purposes.
-  string user_agent = 6; // User agent string from the client that is creating the token, providing context about the device or application used.
+// Конфигурация OAuth провайдера
+message OAuthProviderConfig {
+  OAuthProvider provider = 1;
+  string client_id = 2;                       // Client ID в системе провайдера
+  string client_secret = 3;                   // Client Secret (зашифрован)
+  repeated string redirect_uris = 4;          // Разрешенные redirect URI
+  repeated string scopes = 5;                 // Доступные scopes
+  string authorization_url = 6;               // URL для авторизации
+  string token_url = 7;                       // URL для получения токенов
+  string userinfo_url = 8;                    // URL для получения информации о пользователе
+  string revoke_url = 9;                      // URL для отзыва токенов
+  bool is_active = 10;                        // Активна ли конфигурация
+  google.protobuf.Timestamp created_at = 11;
+  google.protobuf.Timestamp updated_at = 12;
+  map<string, string> additional_params = 13; // Дополнительные параметры провайдера
 }
 
-// CreateTokenResponse is used to return the newly created OAuth token.
-message CreateTokenResponse {
-  OAuthToken token = 1; // The newly created OAuth token, represented by an OAuthToken message.
+// Информация о пользователе от провайдера
+message ProviderUserInfo {
+  OAuthProvider provider = 1;
+  string provider_user_id = 2;
+  string email = 3;
+  string name = 4;
+  string given_name = 5;
+  string family_name = 6;
+  string picture = 7;
+  string locale = 8;
+  bool email_verified = 9;
+  map<string, string> additional_fields = 10; // Дополнительные поля от провайдера
 }
 
-// GetTokenRequest is used to retrieve a specific OAuth token by its ID.
+message StoreProviderTokensRequest {
+  string identity_id = 1;                     // ID пользователя в нашей системе
+  OAuthProvider provider = 2;                 // Провайдер
+  string access_token = 3;                    // Access token от провайдера
+  string refresh_token = 4;                   // Refresh token (если есть)
+  string id_token = 5;                        // ID token (если есть)
+  repeated string scopes = 6;                 // Полученные scopes
+  int32 expires_in = 7;                       // Время жизни access token в секундах
+  string token_type = 8;                      // Тип токена (обычно "Bearer")
+
+  // Информация о пользователе от провайдера
+  ProviderUserInfo user_info = 9;
+
+  // Контекст
+  string ip_address = 10;
+  string user_agent = 11;
+  string device_id = 12;
+
+  // Дополнительные данные
+  map<string, string> additional_data = 13;
+}
+
+message StoreProviderTokensResponse {
+  repeated OAuthToken stored_tokens = 1; // Сохраненные токены
+  bool success = 2;
+  string message = 3;
+}
+
+// === ПОЛУЧЕНИЕ ТОКЕНОВ ===
+
+message GetUserProviderTokensRequest {
+  string identity_id = 1;
+  OAuthProvider provider = 2;
+  TokenType token_type = 3;           // Фильтр по типу токена (опционально)
+  bool active_only = 4;                       // Только активные токены
+}
+
+message GetUserProviderTokensResponse {
+  repeated OAuthToken tokens = 1;
+}
+
 message GetTokenRequest {
-  string id = 1; // Identifier for the token to retrieve, linking to the OAuthToken message.
+  string token_id = 1;                        // ID токена в нашей БД
+  bool decrypt = 2;                           // Расшифровать токен (только для авторизованных запросов)
 }
 
-// GetTokenResponse is used to return the OAuth token that matches the requested ID.
 message GetTokenResponse {
-  OAuthToken token = 1; // The OAuth token that matches the requested ID, represented by an OAuthToken message.
+  OAuthToken token = 1;
+  string decrypted_token = 2;                 // Расшифрованный токен (если decrypt=true)
 }
 
-// RefreshTokenRequest is used to request a new access token using a refresh token.
-message RefreshTokenRequest {
-  string refresh_token = 1; // The refresh token used to obtain a new access token, typically provided by the client application.
+// === ОБНОВЛЕНИЕ ТОКЕНОВ ===
+
+message RefreshProviderTokenRequest {
+  string identity_id = 1;
+  OAuthProvider provider = 2;
+  string refresh_token_id = 3;                // ID refresh token в нашей БД
+  string ip_address = 4;
+  string user_agent = 5;
+  string device_id = 6;
 }
 
-// RefreshTokenResponse is used to return the new access token after refreshing.
-message RefreshTokenResponse {
-  OAuthToken token = 1; // The new OAuth token after refreshing, represented by an OAuthToken message.
+message RefreshProviderTokenResponse {
+  OAuthToken new_access_token = 1;    // Новый access token
+  OAuthToken new_refresh_token = 2;   // Новый refresh token (если выдан)
+  bool success = 3;
+  string error = 4;                           // Ошибка от провайдера
 }
 
-// ValidateTokenRequest is used to validate an access token.
+// === УПРАВЛЕНИЕ ТОКЕНАМИ ===
+
+message RevokeProviderTokensRequest {
+  string identity_id = 1;
+  OAuthProvider provider = 2;
+  string reason = 3;                          // Причина отзыва
+  bool revoke_at_provider = 4;                // Отозвать также у провайдера
+}
+
+message RevokeProviderTokensResponse {
+  bool success = 1;
+  int32 revoked_count = 2;
+  repeated string errors = 3;                 // Ошибки при отзыве у провайдеров
+}
+
+message RevokeAllUserTokensRequest {
+  string identity_id = 1;
+  string reason = 2;
+  bool revoke_at_providers = 3;               // Отозвать у всех провайдеров
+}
+
+message RevokeAllUserTokensResponse {
+  bool success = 1;
+  int32 revoked_count = 2;
+  map<string, string> provider_errors = 3;   // Ошибки по провайдерам
+}
+
 message ValidateTokenRequest {
-  string access_token = 1; // The access token to validate, typically provided in the Authorization header of an API request.
+  string token_id = 1;                        // ID токена в нашей БД
+  bool check_with_provider = 2;               // Проверить также у провайдера
 }
 
-// ValidateTokenResponse is used to return the validation result of an access token.
 message ValidateTokenResponse {
-  bool valid = 1; // Indicates whether the access token is valid or not.
-  OAuthToken token = 2; // The OAuth token that was validated, represented by an OAuthToken message. This may be null if the token is invalid.
+  bool is_valid = 1;
+  bool is_expired = 2;
+  bool is_revoked = 3;
+  TokenStatus status = 4;
+  google.protobuf.Timestamp expires_at = 5;
+  string error = 6;
 }
 
-// RevokeTokenRequest is used to revoke a specific OAuth token by its ID.
-message RevokeTokenRequest {
-  string id = 1; // Identifier for the token to revoke, linking to the OAuthToken message.
+// === ПОЛУЧЕНИЕ ДАННЫХ ПОЛЬЗОВАТЕЛЯ ===
+
+message GetProviderUserInfoRequest {
+  string identity_id = 1;
+  OAuthProvider provider = 2;
+  bool use_cached = 3;                        // Использовать кэшированную информацию
 }
 
-// RevokeTokenResponse is used to return the result of the token revocation.
-message RevokeTokenResponse {
-  bool success = 1; // Indicates whether the token revocation was successful or not.
+message GetProviderUserInfoResponse {
+  ProviderUserInfo user_info = 1;
+  bool from_cache = 2;                        // Данные из кэша или свежие
+  string error = 3;
 }
 
-// RevokeAllTokensRequest is used to revoke all tokens associated with a specific user and client.
-message RevokeAllTokensRequest {
-  string user_id = 1; // Identifier for the user whose tokens are to be revoked, linking to the User message.
-  string client_id = 2; // Identifier for the client application whose tokens are to be revoked, linking to the Client message.
+// === УПРАВЛЕНИЕ КОНФИГУРАЦИЯМИ ===
+
+message UpsertProviderConfigRequest {
+  OAuthProviderConfig config = 1;
+  string admin_id = 2;                        // ID администратора
 }
 
-// RevokeAllTokensResponse is used to return the result of revoking all tokens for a user and client.
-message RevokeAllTokensResponse {
-  int32 revoked_count = 1; // The number of tokens that were successfully revoked, indicating how many tokens were affected by the operation.
+message UpsertProviderConfigResponse {
+  OAuthProviderConfig config = 1;
+  bool created = 2;                           // true если создан, false если обновлен
 }
 
-// ListTokensRequest is used to list OAuth tokens with pagination and filtering options.
-message ListTokensRequest {
-  int32 take = 1; // The maximum number of tokens to return, controlling the size of each response.
-  int32 skip = 2; // The number of tokens to skip before starting to return results, used for pagination.
-  string filter = 3; // Optional filter string to apply to the token list, allowing clients to filter tokens by criteria such as user ID or client ID.
+message GetProviderConfigRequest {
+  OAuthProvider provider = 1;
 }
 
-// ListTokensResponse is used to return a list of OAuth tokens along with pagination information.
-message ListTokensResponse {
-  repeated OAuthToken tokens = 1; // The list of OAuth tokens matching the request, represented by repeated OAuthToken messages.
-  int32 total = 2; //
+message GetProviderConfigResponse {
+  OAuthProviderConfig config = 1;
 }
 
-// ListUserTokensRequest is used to list OAuth tokens for a specific user with pagination options.
+message ListProviderConfigsRequest {
+  bool active_only = 1;
+}
+
+message ListProviderConfigsResponse {
+  repeated OAuthProviderConfig configs = 1;
+}
+
+// === АУДИТ И МОНИТОРИНГ ===
+
 message ListUserTokensRequest {
-  string user_id = 1; // Identifier for the user whose tokens are to be listed, linking to the User message.
-  int32 take = 2; // The maximum number of tokens to return, controlling the size of each response.
-  int32 skip = 3; // The number of tokens to skip before starting to return results, used for pagination.
-  string filter = 4; // Optional filter string to apply to the token list, allowing clients to filter tokens by criteria such as client ID or scope.
+  string identity_id = 1;
+  OAuthProvider provider_filter = 2;          // Фильтр по провайдеру
+  TokenStatus status_filter = 3;              // Фильтр по статусу
+  int32 take = 4;
+  int32 skip = 5;
+  string sort_by = 6;                         // created_at, last_used_at, expires_at
+  bool desc = 7;
 }
 
-// ListUserTokensResponse is used to return a list of OAuth tokens for a specific user along with pagination information.
 message ListUserTokensResponse {
-  repeated OAuthToken tokens = 1; // The list of OAuth tokens for the specified user, represented by repeated OAuthToken messages.
-  int32 total = 2; // The total number of tokens for the user, used for pagination and to inform clients about the total available tokens.
+  repeated TokenSummary tokens = 1;
+  int32 total = 2;
 }
 
-// GetActiveTokensRequest is used to retrieve all active tokens for a specific user.
-message GetActiveTokensRequest {
-  string user_id = 1; // Identifier for the user whose active tokens are to be retrieved, linking to the User message.
+message TokenSummary {
+  string token_id = 1;
+  TokenType token_type = 2;
+  OAuthProvider provider = 3;
+  TokenStatus status = 4;
+  repeated string scopes = 5;
+  google.protobuf.Timestamp created_at = 6;
+  google.protobuf.Timestamp expires_at = 7;
+  google.protobuf.Timestamp last_used_at = 8;
+  string device_info = 9;                     // Краткая информация об устройстве
 }
 
-// GetActiveTokensResponse is used to return a list of active OAuth tokens for a specific user.
-message GetActiveTokensResponse {
-  repeated OAuthToken tokens = 1; // The list of active OAuth tokens for the specified user, represented by repeated OAuthToken messages.
+message GetTokenUsageStatsRequest {
+  string identity_id = 1;                     // Статистика для пользователя
+  OAuthProvider provider = 2;                 // Или для провайдера
+  google.protobuf.Timestamp from_date = 3;
+  google.protobuf.Timestamp to_date = 4;
 }
+
+message GetTokenUsageStatsResponse {
+  int32 total_tokens = 1;                     // Всего токенов
+  int32 active_tokens = 2;                    // Активных токенов
+  int32 expired_tokens = 3;                   // Истекших токенов
+  int32 revoked_tokens = 4;                   // Отозванных токенов
+  repeated ProviderStats stats_by_provider = 5;
+  repeated DailyUsage daily_usage = 6;        // Использование по дням
+}
+
+message ProviderStats {
+  OAuthProvider provider = 1;
+  int32 total_tokens = 2;
+  int32 active_tokens = 3;
+  google.protobuf.Timestamp last_used = 4;
+  int32 refresh_count = 5;                    // Количество обновлений токенов
+}
+
+message DailyUsage {
+  google.protobuf.Timestamp date = 1;
+  int32 tokens_used = 2;
+  int32 api_calls = 3;                        // Количество обращений к провайдеру
+  int32 unique_users = 4;
+}
+
+// === ОЧИСТКА ===
+
+message CleanupExpiredTokensRequest {
+  OAuthProvider provider = 1;                 // Очистить для конкретного провайдера
+  google.protobuf.Timestamp older_than = 2;  // Удалить токены старше указанной даты
+  int32 batch_size = 3;                       // Размер пакета для обработки
+  bool dry_run = 4;                           // Только подсчитать, не удалять
+}
+
+message CleanupExpiredTokensResponse {
+  int32 tokens_cleaned = 1;                   // Количество удаленных токенов
+  map<string, int32> cleanup_by_provider = 2; // Статистика по провайдерам
+  bool success = 3;
+  string message = 4;
+}
+

@@ -1,0 +1,128 @@
+syntax = "proto3";
+
+package lemmingtrip.identity;
+
+import "identity/identity.proto";
+
+service IdentityService {
+
+  rpc RegisterLocal(RegisterLocalRequest) returns (RegisterLocalResponse);
+  rpc RegisterOAuth(RegisterOAuthRequest) returns (RegisterOAuthResponse);
+  rpc CheckAvailability(CheckAvailabilityRequest) returns (CheckAvailabilityResponse);
+  rpc LoginLocal(LoginLocalRequest) returns (LoginResponse);
+  rpc LoginOAuth(LoginOAuthRequest) returns (LoginResponse);
+  rpc LoginMFA(LoginMFARequest) returns (LoginResponse);
+  rpc LoginWebAuthn(LoginWebAuthnRequest) returns (LoginResponse);
+  rpc Logout(LogoutRequest) returns (LogoutResponse);
+  rpc LogoutAll(LogoutAllRequest) returns (LogoutAllResponse);
+
+  // === ВЕРИФИКАЦИЯ И АКТИВАЦИЯ ===
+  // Активация аккаунта по коду из email
+  rpc ActivateAccount(ActivateAccountRequest) returns (ActivateAccountResponse);
+
+  // Верификация email адреса
+  rpc VerifyEmail(VerifyEmailRequest) returns (VerifyEmailResponse);
+
+  // Повторная отправка кода активации/верификации
+  rpc ResendVerification(ResendVerificationRequest) returns (ResendVerificationResponse);
+
+  // === УПРАВЛЕНИЕ ПАРОЛЯМИ ===
+  // Запрос на сброс пароля
+  rpc RequestPasswordReset(RequestPasswordResetRequest) returns (RequestPasswordResetResponse);
+
+  // Сброс пароля по коду
+  rpc ResetPassword(ResetPasswordRequest) returns (ResetPasswordResponse);
+
+  // Изменение пароля (требует текущий пароль)
+  rpc ChangePassword(ChangePasswordRequest) returns (ChangePasswordResponse);
+
+  // === МНОГОФАКТОРНАЯ АУТЕНТИФИКАЦИЯ ===
+  // Включение MFA (получение QR кода для TOTP)
+  rpc EnableMFA(EnableMFARequest) returns (EnableMFAResponse);
+
+  // Подтверждение включения MFA
+  rpc ConfirmEnableMFA(ConfirmEnableMFARequest) returns (ConfirmEnableMFAResponse);
+
+  // Отключение MFA
+  rpc DisableMFA(DisableMFARequest) returns (DisableMFAResponse);
+
+  // Генерация новых backup кодов для MFA
+  rpc GenerateMFABackupCodes(GenerateMFABackupCodesRequest) returns (GenerateMFABackupCodesResponse);
+
+  // === WEBAUTHN/FIDO2 ===
+  // Регистрация нового WebAuthn устройства
+  rpc RegisterWebAuthn(RegisterWebAuthnRequest) returns (RegisterWebAuthnResponse);
+
+  // Удаление WebAuthn устройства
+  rpc RemoveWebAuthn(RemoveWebAuthnRequest) returns (RemoveWebAuthnResponse);
+
+  // Список WebAuthn устройств пользователя
+  rpc ListWebAuthnDevices(ListWebAuthnDevicesRequest) returns (ListWebAuthnDevicesResponse);
+
+  // === УПРАВЛЕНИЕ ПРОВАЙДЕРАМИ ===
+  // Привязка нового OAuth провайдера к существующему аккаунту
+  rpc LinkProvider(LinkProviderRequest) returns (LinkProviderResponse);
+
+  // Отвязка OAuth провайдера от аккаунта
+  rpc UnlinkProvider(UnlinkProviderRequest) returns (UnlinkProviderResponse);
+
+  // Список привязанных провайдеров
+  rpc ListLinkedProviders(ListLinkedProvidersRequest) returns (ListLinkedProvidersResponse);
+
+  // === УПРАВЛЕНИЕ ПРОФИЛЕМ ===
+  // Получение информации о пользователе
+  rpc GetIdentity(GetIdentityRequest) returns (GetIdentityResponse);
+
+  // Обновление профиля пользователя
+  rpc UpdateProfile(UpdateProfileRequest) returns (UpdateProfileResponse);
+
+  // Изменение email (с верификацией)
+  rpc ChangeEmail(ChangeEmailRequest) returns (ChangeEmailResponse);
+
+  // Подтверждение изменения email
+  rpc ConfirmEmailChange(ConfirmEmailChangeRequest) returns (ConfirmEmailChangeResponse);
+
+  // === АДМИНИСТРИРОВАНИЕ ===
+  // Блокировка пользователя (админ функция)
+  rpc BanIdentity(BanIdentityRequest) returns (BanIdentityResponse);
+
+  // Разблокировка пользователя (админ функция)
+  rpc UnbanIdentity(UnbanIdentityRequest) returns (UnbanIdentityResponse);
+
+  // Принудительная верификация пользователя (админ функция)
+  rpc ForceVerifyIdentity(ForceVerifyIdentityRequest) returns (ForceVerifyIdentityResponse);
+
+  // Список пользователей с фильтрацией (админ функция)
+  rpc ListIdentities(ListIdentitiesRequest) returns (ListIdentitiesResponse);
+
+  // === БЕЗОПАСНОСТЬ И АУДИТ ===
+  // Получение логов безопасности для пользователя
+  rpc GetSecurityLog(GetSecurityLogRequest) returns (GetSecurityLogResponse);
+
+  // Уведомление о подозрительной активности
+  rpc ReportSuspiciousActivity(ReportSuspiciousActivityRequest) returns (ReportSuspiciousActivityResponse);
+
+  // === УДАЛЕНИЕ АККАУНТА ===
+  // Запрос на удаление аккаунта (с периодом ожидания)
+  rpc RequestAccountDeletion(RequestAccountDeletionRequest) returns (RequestAccountDeletionResponse);
+
+  // Отмена запроса на удаление аккаунта
+  rpc CancelAccountDeletion(CancelAccountDeletionRequest) returns (CancelAccountDeletionResponse);
+
+  // Окончательное удаление аккаунта
+  rpc DeleteAccount(DeleteAccountRequest) returns (DeleteAccountResponse);
+
+  // === СОВРЕМЕННЫЕ МЕТОДЫ АУТЕНТИФИКАЦИИ ===
+  // Вход через Passkey (WebAuthn без пароля)
+  rpc LoginPasskey(LoginPasskeyRequest) returns (LoginResponse);
+
+  // Регистрация Passkey
+  rpc RegisterPasskey(RegisterPasskeyRequest) returns (RegisterPasskeyResponse);
+
+  // Passwordless вход по email (magic link)
+  rpc SendMagicLink(SendMagicLinkRequest) returns (SendMagicLinkResponse);
+
+  // Подтверждение входа по magic link
+  rpc ConfirmMagicLink(ConfirmMagicLinkRequest) returns (LoginResponse);
+
+}

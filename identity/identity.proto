@@ -1,0 +1,631 @@
+syntax = "proto3";
+
+package lemmingtrip.identity;
+
+import "google/protobuf/timestamp.proto";
+
+enum IdentityProvider {
+  IDENTITY_PROVIDER_UNSPECIFIED = 0;
+  IDENTITY_PROVIDER_LOCAL = 1;
+  IDENTITY_PROVIDER_GOOGLE = 2;
+  IDENTITY_PROVIDER_FACEBOOK = 3;
+  IDENTITY_PROVIDER_MICROSOFT = 4;
+  IDENTITY_PROVIDER_APPLE = 5;
+  IDENTITY_PROVIDER_GITHUB = 6;
+  IDENTITY_PROVIDER_DISCORD = 7;
+  IDENTITY_PROVIDER_TELEGRAM = 8;
+}
+
+enum IdentityStatus {
+  IDENTITY_STATUS_UNSPECIFIED = 0;
+  IDENTITY_STATUS_PENDING_VERIFICATION = 1;
+  IDENTITY_STATUS_ACTIVE = 2;
+  IDENTITY_STATUS_SUSPENDED = 3;
+  IDENTITY_STATUS_BANNED = 4;
+  IDENTITY_STATUS_PENDING_DELETION = 5;
+}
+
+enum WebAuthnType {
+  WEBAUTHN_TYPE_UNSPECIFIED = 0;
+  WEBAUTHN_TYPE_AUTHENTICATOR = 1; // Внешний аутентификатор (USB ключ)
+  WEBAUTHN_TYPE_PLATFORM = 2; // Встроенный в устройство (TouchID, FaceID)
+  WEBAUTHN_TYPE_PASSKEY = 3; // Современный Passkey
+}
+
+// === ОСНОВНЫЕ СУЩНОСТИ ===
+
+// === ОСНОВНАЯ МОДЕЛЬ ===
+message Identity {
+  string id = 1;
+
+  // Основная информация (всегда загружается)
+  string email = 2;
+  string username = 3;
+  string display_name = 4;
+  string avatar_url = 5;
+  IdentityStatus status = 6;
+  IdentityProvider primary_provider = 7;
+
+  // Опциональные блоки (загружаются по требованию)
+  optional IdentityProfile profile = 8;
+  optional IdentitySecurity security = 9;
+  optional IdentityAuth auth = 10;
+  optional IdentityMFA mfa = 11;
+  optional IdentityAudit audit = 12;
+
+  // Массивы (загружаются отдельно)
+  repeated ProviderAccount provider_accounts = 14; // Только если include_providers = true
+  repeated WebAuthnCredential webauthn_credentials = 15; // Только если include_webauthn = true
+}
+
+// === КОМПОЗИТНЫЕ МОДЕЛИ ===
+
+message IdentityProfile {
+  string phone = 1;
+  bool phone_verified = 2;
+  string preferred_language = 3;
+  string timezone = 4;
+  map<string, string> custom_fields = 5; // Дополнительные поля профиля
+}
+
+message IdentitySecurity {
+  int32 failed_login_attempts = 1;
+  google.protobuf.Timestamp locked_until = 2;
+  string ban_reason = 3;
+  google.protobuf.Timestamp banned_at = 4;
+  repeated string recovery_contacts = 5;
+  string risk_score = 6; // LOW, MEDIUM, HIGH
+  repeated string trusted_devices = 7; // Device IDs
+}
+
+message IdentityAuth {
+  string password_hash = 1;
+  string password_salt = 2;
+  google.protobuf.Timestamp password_changed_at = 3;
+  bool email_verified = 4;
+  string email_verification_code = 5;
+  google.protobuf.Timestamp email_verification_expires_at = 6;
+  google.protobuf.Timestamp verified_at = 7;
+  bool passwordless_enabled = 8;
+}
+
+message IdentityMFA {
+  bool mfa_enabled = 1;
+  string mfa_secret = 2;
+  repeated string mfa_backup_codes = 3;
+  google.protobuf.Timestamp mfa_enabled_at = 4;
+  repeated string mfa_methods = 5; // ["totp", "sms", "webauthn"]
+  bool backup_codes_used = 6; // Флаг использования backup кодов
+}
+
+message IdentityAudit {
+  google.protobuf.Timestamp last_login_at = 1;
+  string last_login_ip = 2;
+  string last_user_agent = 3;
+  string last_login_location = 4; // Геолокация
+  int32 total_logins = 5;
+  google.protobuf.Timestamp created_at = 6;
+  google.protobuf.Timestamp updated_at = 7;
+}
+
+message ConsentRecord {
+  string consent_type = 1; // "marketing", "analytics", "cookies"
+  bool granted = 2;
+  google.protobuf.Timestamp granted_at = 3;
+  string version = 4; // Версия соглашения
+}
+
+message ProviderAccount {
+  IdentityProvider provider = 1;
+  string provider_user_id = 2; // ID пользователя у провайдера
+  string provider_email = 3; // Email у провайдера
+  string provider_username = 4; // Username у провайдера
+  string access_token = 5; // Текущий access token
+  string refresh_token = 6; // Refresh token
+  google.protobuf.Timestamp token_expires_at = 7;
+  repeated string scopes = 8; // Разрешения
+  google.protobuf.Timestamp linked_at = 9; // Когда был привязан
+  google.protobuf.Timestamp last_used_at = 10; // Когда последний раз использовался
+}
+
+message WebAuthnCredential {
+  string id = 1; // ID credential
+  string name = 2; // Имя устройства (заданное пользователем)
+  WebAuthnType type = 3;
+  bytes public_key = 4; // Публичный ключ
+  int64 sign_count = 5; // Счетчик подписей (защита от replay атак)
+  bytes aaguid = 6; // Authenticator AAGUID
+  string device_info = 7; // Информация об устройстве
+  google.protobuf.Timestamp created_at = 8;
+  google.protobuf.Timestamp last_used_at = 9;
+  bool is_backup_eligible = 10; // Может ли быть восстановлен
+  bool is_backup_state = 11; // Находится ли в состоянии backup
+}
+
+message SecurityEvent {
+  string id = 1;
+  string identity_id = 2;
+  string event_type = 3; // LOGIN, FAILED_LOGIN, PASSWORD_CHANGE, etc.
+  string description = 4;
+  string ip_address = 5;
+  string user_agent = 6;
+  string risk_level = 7; // LOW, MEDIUM, HIGH
+  map<string, string> metadata = 8; // Дополнительные данные
+  google.protobuf.Timestamp occurred_at = 9;
+}
+
+// === РЕГИСТРАЦИЯ ===
+
+message RegisterLocalRequest {
+  string email = 1;
+  string password = 2;
+  string username = 3;
+}
+
+message RegisterLocalResponse {
+  Identity identity = 1;
+}
+
+message RegisterOAuthRequest {
+  IdentityProvider provider = 1;
+  string authorization_code = 2;
+  string state = 3;
+  string redirect_uri = 4;
+  string code_verifier = 5;
+}
+
+message RegisterOAuthResponse {
+  Identity identity = 1;
+  bool is_new_user = 2; // true если создан новый пользователь, false если вход в существующий
+  string access_token = 3;
+  string refresh_token = 4;
+  int32 expires_in = 5;
+}
+
+message CheckAvailabilityRequest {
+  string email = 1;
+  string username = 2;
+}
+
+message CheckAvailabilityResponse {
+  bool email_available = 1;
+  bool username_available = 2;
+  repeated string email_suggestions = 3;
+  repeated string username_suggestions = 4;
+}
+
+// === АУТЕНТИФИКАЦИЯ ===
+
+message LoginLocalRequest {
+  string login = 1; // email или username
+  string password = 2;
+  bool remember_me = 3; // Длительная сессия
+  string device_id = 4; // Идентификатор устройства для доверенных устройств
+}
+
+message LoginResponse {
+  Identity identity = 1;
+  string access_token = 2;
+  string refresh_token = 3;
+  int32 expires_in = 4;
+  bool requires_mfa = 5; // Требуется дополнительная аутентификация
+  repeated string mfa_methods = 6; // Доступные методы MFA
+  string session_id = 7;
+}
+
+message LoginOAuthRequest {
+  IdentityProvider provider = 1;
+  string authorization_code = 2;
+  string state = 3;
+  string redirect_uri = 4;
+  string code_verifier = 5; // PKCE
+  string device_id = 6;
+}
+
+message LoginMFARequest {
+  string session_id = 1; // Временная сессия после первичной аутентификации
+  string mfa_code = 2; // TOTP код или backup код
+  string method = 3; // "totp", "backup", "sms", etc.
+}
+
+message LoginWebAuthnRequest {
+  string challenge = 1; // Challenge от сервера
+  string credential_id = 2;
+  bytes client_data_json = 3;
+  bytes authenticator_data = 4;
+  bytes signature = 5;
+  string device_id = 6;
+}
+
+message LoginPasskeyRequest {
+  string email_or_username = 1; // Для идентификации пользователя
+  string challenge = 2;
+  bytes client_data_json = 3;
+  bytes authenticator_data = 4;
+  bytes signature = 5;
+  string credential_id = 6;
+  string ip_address = 7;
+  string user_agent = 8;
+}
+
+message LogoutRequest {
+  string session_id = 1;
+}
+
+message LogoutResponse {
+  bool success = 1;
+}
+
+message LogoutAllRequest {
+  string identity_id = 1;
+}
+
+message LogoutAllResponse {
+  bool success = 1;
+  int32 terminated_sessions_count = 2;
+}
+
+// === ВЕРИФИКАЦИЯ ===
+
+message ActivateAccountRequest {
+  string activation_code = 1;
+  string email = 2; // Для дополнительной проверки
+}
+
+message ActivateAccountResponse {
+  Identity identity = 1;
+  bool success = 2;
+}
+
+message VerifyEmailRequest {
+  string verification_code = 1;
+  string email = 2;
+}
+
+message VerifyEmailResponse {
+  bool success = 1;
+  Identity identity = 2;
+}
+
+message ResendVerificationRequest {
+  string email = 1;
+  string type = 2; // "activation", "email_verification", "password_reset"
+}
+
+message ResendVerificationResponse {
+  bool success = 1;
+  string sent_to = 2; // Замаскированный email/phone
+  google.protobuf.Timestamp can_resend_at = 3; // Когда можно отправить следующий
+}
+
+// === УПРАВЛЕНИЕ ПАРОЛЯМИ ===
+
+message RequestPasswordResetRequest {
+  string email = 1;
+}
+
+message RequestPasswordResetResponse {
+  bool success = 1;
+  string sent_to = 2; // Замаскированный email
+}
+
+message ResetPasswordRequest {
+  string reset_code = 1;
+  string new_password = 2;
+  string email = 3; // Для дополнительной проверки
+}
+
+message ResetPasswordResponse {
+  bool success = 1;
+  Identity identity = 2;
+}
+
+message ChangePasswordRequest {
+  string identity_id = 1;
+  string current_password = 2;
+  string new_password = 3;
+}
+
+message ChangePasswordResponse {
+  bool success = 1;
+  bool requires_reauth = 2; // Требуется повторная аутентификация во всех сессиях
+}
+
+// === MFA ===
+
+message EnableMFARequest {
+  string identity_id = 1;
+}
+
+message EnableMFAResponse {
+  string secret = 1; // TOTP секрет
+  string qr_code_url = 2; // URL для QR кода
+  repeated string backup_codes = 3; // Резервные коды
+}
+
+message ConfirmEnableMFARequest {
+  string identity_id = 1;
+  string mfa_code = 2; // Код для подтверждения настройки
+}
+
+message ConfirmEnableMFAResponse {
+  bool success = 1;
+  repeated string backup_codes = 2; // Финальные backup коды
+}
+
+message DisableMFARequest {
+  string identity_id = 1;
+  string password = 2; // Подтверждение паролем
+  string mfa_code = 3; // Или текущим MFA кодом
+}
+
+message DisableMFAResponse {
+  bool success = 1;
+}
+
+message GenerateMFABackupCodesRequest {
+  string identity_id = 1;
+  string password = 2; // Подтверждение
+}
+
+message GenerateMFABackupCodesResponse {
+  repeated string backup_codes = 1;
+}
+
+// === WEBAUTHN ===
+
+message RegisterWebAuthnRequest {
+  string identity_id = 1;
+  string device_name = 2; // Имя устройства от пользователя
+  string challenge = 3;
+  bytes client_data_json = 4;
+  bytes attestation_object = 5;
+}
+
+message RegisterWebAuthnResponse {
+  bool success = 1;
+  WebAuthnCredential credential = 2;
+}
+
+message RegisterPasskeyRequest {
+  string identity_id = 1;
+  string device_name = 2;
+  string challenge = 3;
+  bytes client_data_json = 4;
+  bytes attestation_object = 5;
+  bool cross_platform = 6; // Может ли использоваться на других устройствах
+}
+
+message RegisterPasskeyResponse {
+  bool success = 1;
+  WebAuthnCredential credential = 2;
+}
+
+message RemoveWebAuthnRequest {
+  string identity_id = 1;
+  string credential_id = 2;
+  string password = 3; // Подтверждение
+}
+
+message RemoveWebAuthnResponse {
+  bool success = 1;
+}
+
+message ListWebAuthnDevicesRequest {
+  string identity_id = 1;
+}
+
+message ListWebAuthnDevicesResponse {
+  repeated WebAuthnCredential devices = 1;
+}
+
+// === УПРАВЛЕНИЕ ПРОВАЙДЕРАМИ ===
+
+message LinkProviderRequest {
+  string identity_id = 1;
+  IdentityProvider provider = 2;
+  string authorization_code = 3;
+  string state = 4;
+  string redirect_uri = 5;
+  string code_verifier = 6; // PKCE
+}
+
+message LinkProviderResponse {
+  bool success = 1;
+  ProviderAccount provider_account = 2;
+}
+
+message UnlinkProviderRequest {
+  string identity_id = 1;
+  IdentityProvider provider = 2;
+  string password = 3; // Подтверждение, если это не единственный способ входа
+}
+
+message UnlinkProviderResponse {
+  bool success = 1;
+  bool warning_last_auth_method = 2; // Предупреждение о последнем методе входа
+}
+
+message ListLinkedProvidersRequest {
+  string identity_id = 1;
+}
+
+message ListLinkedProvidersResponse {
+  repeated ProviderAccount providers = 1;
+}
+
+// === УПРАВЛЕНИЕ ПРОФИЛЕМ ===
+
+message GetIdentityRequest {
+  string identity_id = 1;
+  bool include_provider_accounts = 2;
+  bool include_security_info = 3;
+}
+
+message GetIdentityResponse {
+  Identity identity = 1;
+}
+
+message UpdateProfileRequest {
+  string identity_id = 1;
+  string display_name = 2;
+  string username = 3;
+  string avatar_url = 4;
+  string phone = 5;
+}
+
+message UpdateProfileResponse {
+  Identity identity = 1;
+  bool username_changed = 2; // Требует ли дополнительной верификации
+}
+
+message ChangeEmailRequest {
+  string identity_id = 1;
+  string new_email = 2;
+  string password = 3; // Подтверждение
+}
+
+message ChangeEmailResponse {
+  bool success = 1;
+  string verification_sent_to = 2; // Новый email замаскирован
+}
+
+message ConfirmEmailChangeRequest {
+  string verification_code = 1;
+  string new_email = 2;
+}
+
+message ConfirmEmailChangeResponse {
+  bool success = 1;
+  Identity identity = 2;
+}
+
+// === АДМИНИСТРИРОВАНИЕ ===
+
+message BanIdentityRequest {
+  string identity_id = 1;
+  string reason = 2;
+  string admin_id = 3; // ID администратора
+  google.protobuf.Timestamp ban_until = 4; // null = навсегда
+}
+
+message BanIdentityResponse {
+  bool success = 1;
+}
+
+message UnbanIdentityRequest {
+  string identity_id = 1;
+  string admin_id = 2;
+  string reason = 3;
+}
+
+message UnbanIdentityResponse {
+  bool success = 1;
+}
+
+message ForceVerifyIdentityRequest {
+  string identity_id = 1;
+  string admin_id = 2;
+  bool email_verified = 3;
+  bool phone_verified = 4;
+}
+
+message ForceVerifyIdentityResponse {
+  bool success = 1;
+}
+
+message ListIdentitiesRequest {
+  int32 take = 1; // Пагинация
+  int32 skip = 2;
+  string filter = 3; // Фильтр: email, status, provider, etc.
+  string sort_by = 4; // Сортировка
+  bool desc = 5;
+  IdentityStatus status_filter = 6;
+  IdentityProvider provider_filter = 7;
+}
+
+message ListIdentitiesResponse {
+  repeated Identity identities = 1;
+  int32 total = 2;
+}
+
+// === БЕЗОПАСНОСТЬ ===
+
+message GetSecurityLogRequest {
+  string identity_id = 1;
+  int32 take = 2;
+  int32 skip = 3;
+  string event_type_filter = 4;
+}
+
+message GetSecurityLogResponse {
+  repeated SecurityEvent events = 1;
+  int32 total = 2;
+}
+
+message ReportSuspiciousActivityRequest {
+  string identity_id = 1;
+  string activity_type = 2;
+  string description = 3;
+  string ip_address = 4;
+  string user_agent = 5;
+}
+
+message ReportSuspiciousActivityResponse {
+  bool success = 1;
+  string incident_id = 2;
+}
+
+// === УДАЛЕНИЕ АККАУНТА ===
+
+message RequestAccountDeletionRequest {
+  string identity_id = 1;
+  string password = 2;
+  string reason = 3; // Причина удаления
+}
+
+message RequestAccountDeletionResponse {
+  bool success = 1;
+  google.protobuf.Timestamp deletion_scheduled_at = 2; // Когда будет удален
+  int32 days_until_deletion = 3; // Количество дней до удаления
+}
+
+message CancelAccountDeletionRequest {
+  string identity_id = 1;
+  string password = 2;
+}
+
+message CancelAccountDeletionResponse {
+  bool success = 1;
+}
+
+message DeleteAccountRequest {
+  string identity_id = 1;
+  bool force = 2; // Принудительное удаление без ожидания
+  string admin_id = 3; // Если удаляет админ
+}
+
+message DeleteAccountResponse {
+  bool success = 1;
+}
+
+// === MAGIC LINK ===
+
+message SendMagicLinkRequest {
+  string email = 1;
+  string ip_address = 2;
+  string user_agent = 3;
+  string redirect_url = 4; // Куда перенаправить после входа
+}
+
+message SendMagicLinkResponse {
+  bool success = 1;
+  string sent_to = 2; // Замаскированный email
+}
+
+message ConfirmMagicLinkRequest {
+  string magic_token = 1;
+  string ip_address = 2;
+  string user_agent = 3;
+  string device_id = 4;
+}

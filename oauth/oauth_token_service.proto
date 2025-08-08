@@ -3,25 +3,57 @@ package lemmingtrip.oauth;
 
 import "oauth/oauth_token.proto";
 
-// OAuthTokensService provides methods for managing OAuth tokens, including creation, retrieval, refreshing, validation, and revocation.
-// It allows clients to securely manage access tokens for user authentication and authorization.
-service OAuthTokensService {
-  // CreateToken creates a new OAuth token for a user, client, and requested scopes.
-  rpc CreateToken(CreateTokenRequest) returns (CreateTokenResponse);
-  // GetToken retrieves an OAuth token by its ID.
+
+service OAuthTokenService {
+  // === СОХРАНЕНИЕ ТОКЕНОВ ===
+  // Сохранить токены, полученные от внешнего провайдера
+  rpc StoreProviderTokens(StoreProviderTokensRequest) returns (StoreProviderTokensResponse);
+
+  // === ПОЛУЧЕНИЕ ТОКЕНОВ ===
+  // Получить активные токены пользователя для провайдера
+  rpc GetUserProviderTokens(GetUserProviderTokensRequest) returns (GetUserProviderTokensResponse);
+
+  // Получить конкретный токен по ID
   rpc GetToken(GetTokenRequest) returns (GetTokenResponse);
-  // RefreshToken requests a new access token using a refresh token.
-  rpc RefreshToken(RefreshTokenRequest) returns (RefreshTokenResponse);
-  // ValidateToken checks if an access token is valid and returns the token details if valid.
+
+  // === ОБНОВЛЕНИЕ ТОКЕНОВ ===
+  // Обновить access token используя refresh token
+  rpc RefreshProviderToken(RefreshProviderTokenRequest) returns (RefreshProviderTokenResponse);
+
+  // === УПРАВЛЕНИЕ ТОКЕНАМИ ===
+  // Отозвать токены пользователя для провайдера
+  rpc RevokeProviderTokens(RevokeProviderTokensRequest) returns (RevokeProviderTokensResponse);
+
+  // Отозвать все токены пользователя
+  rpc RevokeAllUserTokens(RevokeAllUserTokensRequest) returns (RevokeAllUserTokensResponse);
+
+  // Валидация токена (проверка на истечение, отзыв)
   rpc ValidateToken(ValidateTokenRequest) returns (ValidateTokenResponse);
-  // RevokeToken revokes a specific OAuth token by its ID, making it no longer valid for use.
-  rpc RevokeToken(RevokeTokenRequest) returns (RevokeTokenResponse);
-  // RevokeAllTokens revokes all tokens associated with a specific user and client, ensuring that all sessions are invalidated.
-  rpc RevokeAllTokens(RevokeAllTokensRequest) returns (RevokeAllTokensResponse);
-  // ListTokens retrieves a list of OAuth tokens with pagination and filtering options.
-  rpc ListTokens(ListTokensRequest) returns (ListTokensResponse);
-  // ListUserTokens retrieves a list of OAuth tokens for a specific user with pagination options.
+
+  // === ПОЛУЧЕНИЕ ДАННЫХ ПОЛЬЗОВАТЕЛЯ ===
+  // Получить информацию о пользователе от провайдера
+  rpc GetProviderUserInfo(GetProviderUserInfoRequest) returns (GetProviderUserInfoResponse);
+
+  // === УПРАВЛЕНИЕ КОНФИГУРАЦИЯМИ ПРОВАЙДЕРОВ ===
+  // Создать/обновить конфигурацию провайдера
+  rpc UpsertProviderConfig(UpsertProviderConfigRequest) returns (UpsertProviderConfigResponse);
+
+  // Получить конфигурацию провайдера
+  rpc GetProviderConfig(GetProviderConfigRequest) returns (GetProviderConfigResponse);
+
+  // Список всех конфигураций провайдеров
+  rpc ListProviderConfigs(ListProviderConfigsRequest) returns (ListProviderConfigsResponse);
+
+  // === АУДИТ И МОНИТОРИНГ ===
+  // Список токенов пользователя со всеми провайдерами
   rpc ListUserTokens(ListUserTokensRequest) returns (ListUserTokensResponse);
-  // GetActiveTokens retrieves all active tokens for a specific user, allowing clients to manage user sessions effectively.
-  rpc GetActiveTokens(GetActiveTokensRequest) returns (GetActiveTokensResponse);
+
+  // Статистика использования токенов
+  rpc GetTokenUsageStats(GetTokenUsageStatsRequest) returns (GetTokenUsageStatsResponse);
+
+  // === ОЧИСТКА ===
+  // Очистить истекшие токены
+  rpc CleanupExpiredTokens(CleanupExpiredTokensRequest) returns (CleanupExpiredTokensResponse);
 }
+
+

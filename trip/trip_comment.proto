@@ -8,7 +8,7 @@ import "google/protobuf/timestamp.proto";
 message TripComment {
   string id = 1; // Unique identifier for the comment, typically a UUID.
   string trip_id = 2; // Identifier for the trip this comment belongs to, linking to the Trip message.
-  string user_id = 3; // Identifier for the user who made the comment, linking to the User message.
+  string identity_id = 3; // Identifier for the user who made the comment, linking to the User message.
   string parent_id = 4; // Identifier for the parent comment, if this is a reply to another comment, linking to the TripComment message.
   string text = 5; // The content of the comment, which can include text and possibly formatted content.
   google.protobuf.Timestamp created_at = 6; // Timestamp indicating when the comment was created, useful for sorting and displaying comments in chronological order.
@@ -18,7 +18,7 @@ message TripComment {
 
 message CreateTripCommentRequest {
   string trip_id = 1; // Identifier for the trip this comment belongs to, linking to the Trip message.
-  string user_id = 2; // Identifier for the user who made the comment, linking to the User message.
+  string identity_id = 2; // Identifier for the user who made the comment, linking to the User message.
   string parent_id = 3; // Identifier for the parent comment, if this is a reply to another comment, linking to the TripComment message.
   string text = 4; // The content of the comment, which can include text and possibly formatted content.
 }
@@ -75,7 +75,7 @@ message ListCommentsResponse {
 // MarkCommentAsReadRequest is used to mark a specific comment as read by a user.
 message MarkCommentAsReadRequest {
   string comment_id = 1; // ID of the comment to mark as read.
-  string user_id = 2; // ID of the user marking the comment as read, linking to the User message.
+  string identity_id = 2; // ID of the user marking the comment as read, linking to the User message.
 }
 
 // MarkCommentAsReadResponse indicates the success of the operation to mark a comment as read.
@@ -85,7 +85,7 @@ message MarkCommentAsReadResponse {
 
 // ListUnreadCommentsRequest is used to list all unread comments for a specific user.
 message ListUnreadCommentsRequest {
-  string user_id = 1; // ID of the user for whom to list unread comments, linking to the User message.
+  string identity_id = 1; // ID of the user for whom to list unread comments, linking to the User message.
   int32 take = 2; // Number of unread comments to return in the response, useful for pagination.
   int32 skip = 3; // Number of unread comments to skip before starting to return results, useful for pagination.
 }

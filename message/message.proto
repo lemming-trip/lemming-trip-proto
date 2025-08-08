@@ -67,7 +67,7 @@ message GetMessageResponse {
 
 // Request to list messages for a user, with pagination support.
 message ListMessagesRequest {
-  string user_id = 1; // UUID of the user whose messages are being requested
+  string identity_id = 1; // UUID of the user whose messages are being requested
   int32 take = 2; // Number of messages to retrieve (pagination)
   int32 skip = 3; // Number of messages to skip (pagination)
 }
@@ -80,7 +80,7 @@ message ListMessagesResponse {
 
 // Request to mark messages as read.
 message MarkAsReadRequest {
-  string user_id = 1; // UUID of the user marking messages as read
+  string identity_id = 1; // UUID of the user marking messages as read
   repeated string message_ids = 2; // List of message IDs to mark as read
 }
 

@@ -23,7 +23,7 @@ enum TripSearchType {
 // Trip represents a trip in the system.
 message Trip {
   string id = 1; // UUID (RFC4122)
-  string user_id = 2; // UUID of the user who created the trip
+  string identity_id = 2; // UUID of the user who created the trip
   string title = 3; // Title of the trip
   string text = 4; // Description of the trip
   string title_image = 5; // URL of the title image for the trip
@@ -40,7 +40,7 @@ message Trip {
 
 // CreateTripRequest is the request message for creating a new trip.
 message CreateTripRequest {
-  string user_id = 1; // UUID of the user creating the trip
+  string identity_id = 1; // UUID of the user creating the trip
   string title = 2; // Title of the trip
   string text = 3; // Description of the trip
   string title_image = 4; // URL of the title image for the trip
@@ -110,7 +110,7 @@ message ListTripsResponse {
 // LikeTripRequest is the request message for liking a trip.
 message LikeTripRequest {
   string trip_id = 1; // UUID of the trip to like
-  string user_id = 2; // UUID of the user liking the trip
+  string identity_id = 2; // UUID of the user liking the trip
 }
 
 // LikeTripResponse is the response message for the like trip operation.
@@ -121,7 +121,7 @@ message LikeTripResponse {
 // UnlikeTripRequest is the request message for unliking a trip.
 message UnlikeTripRequest {
   string trip_id = 1; // UUID of the trip to unlike
-  string user_id = 2; // UUID of the user unliking the trip
+  string identity_id = 2; // UUID of the user unliking the trip
 }
 
 // UnlikeTripResponse is the response message for the unlike trip operation.
@@ -132,7 +132,7 @@ message UnlikeTripResponse {
 // RateTripRequest is the request message for rating a trip.
 message RateTripRequest {
   string trip_id = 1; // UUID of the trip to rate
-  string user_id = 2; // UUID of the user rating the trip
+  string identity_id = 2; // UUID of the user rating the trip
   int32 rating = 3; // Rating value, typically from 1 to 5
 }
 
@@ -209,14 +209,14 @@ message ListTripLikersRequest {
 
 // ListTripLikersResponse is the response message containing a list of users who liked a specific trip.
 message ListTripLikersResponse {
-  repeated string user_ids = 1; // List of user IDs who liked the trip
+  repeated string identity_ids = 1; // List of user IDs who liked the trip
   int32 total = 2; // Total number of users who liked the trip, useful for pagination
 }
 
 // LogTripViewRequest is the request message for logging a view of a trip.
 message IsTripLikedByUserRequest {
   string trip_id = 1; // UUID of the trip to check
-  string user_id = 2; // UUID of the user to check if they liked the trip
+  string identity_id = 2; // UUID of the user to check if they liked the trip
 }
 
 // LogTripViewResponse is the response message for logging a view of a trip.
@@ -227,7 +227,7 @@ message IsTripLikedByUserResponse {
 // GetUserTripRatingRequest is the request message for getting a user's rating for a specific trip.
 message GetUserTripRatingRequest {
   string trip_id = 1; // UUID of the trip for which to get the user's rating
-  string user_id = 2; // UUID of the user whose rating is being requested
+  string identity_id = 2; // UUID of the user whose rating is being requested
 }
 
 // GetUserTripRatingResponse is the response message containing the user's rating for a specific trip.
@@ -245,7 +245,7 @@ message ListTripRatingsRequest {
 // ListTripRatingsResponse is the response message containing a list of ratings for a specific trip.
 message ListTripRatingsResponse {
   message UserRating {
-    string user_id = 1; // UUID of the user who rated the trip
+    string identity_id = 1; // UUID of the user who rated the trip
     int32 rating = 2; // User's rating for the trip, typically from 1 to 5
     string comment = 3; // Optional comment provided by the user along with their rating
   }
@@ -256,7 +256,7 @@ message ListTripRatingsResponse {
 // LogTripViewRequest is the request message for logging a view of a trip.
 message LogTripViewRequest {
   string trip_id = 1; // UUID of the trip being viewed
-  string user_id = 2; // UUID of the user viewing the trip, can be empty for anonymous views
+  string identity_id = 2; // UUID of the user viewing the trip, can be empty for anonymous views
   bool is_anonymous = 3; // Indicates whether the view is from an anonymous user (true) or a registered user (false)
 }
 
@@ -284,6 +284,6 @@ message ListTripViewersRequest {
 
 // ListTripViewersResponse is the response message containing a list of users who have viewed a specific trip.
 message ListTripViewersResponse {
-  repeated string user_ids = 1; // List of user IDs who have viewed the trip
+  repeated string identity_ids = 1; // List of user IDs who have viewed the trip
   int32 total = 2; // Total number of users who have viewed the trip, useful for pagination
 }

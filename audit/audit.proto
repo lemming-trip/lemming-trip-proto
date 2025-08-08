@@ -23,7 +23,7 @@ enum SecurityEventStatus {
 // SecurityAuditLog represents a security audit log entry.
 message SecurityAuditLog {
   string id = 1; // Unique identifier for the security audit log entry.
-  string account_id = 2; // ID of the account associated with the security event.
+  string identity_id = 2; // ID of the account associated with the security event.
   SecurityEventType event_type = 3; // Type of the security event.
   SecurityEventStatus event_status = 4; // Status of the security event.
   string ip_address = 5; // IP address from which the event originated.
@@ -34,7 +34,7 @@ message SecurityAuditLog {
 
 // ListSecurityEventsRequest represents a request to list security events.
 message ListSecurityAuditLogsRequest {
-  string account_id = 1; // ID of the account for which to list security events.
+  string identity_id = 1; // ID of the account for which to list security events.
   int32 take = 2; // Number of security events to return in the response.
   int32 skip = 3; // Number of security events to skip in the response.
   string sort_by = 4; // Field by which to sort the security events, e.g., "created_at".
@@ -50,7 +50,7 @@ message ListSecurityAuditLogsResponse {
 
 // CreateSecurityEventRequest represents a request to create a new security event.
 message CreateSecurityAuditLogRequest {
-  string account_id = 1; // ID of the account associated with the security event.
+  string identity_id = 1; // ID of the account associated with the security event.
   SecurityEventType event_type = 2; // Type of the security event.
   SecurityEventStatus event_status = 3; // Status of the security event.
   string ip_address = 4; // IP address from which the event originated.

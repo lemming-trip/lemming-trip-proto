@@ -1,0 +1,19 @@
+syntax = "proto3";
+
+package lemmingtrip.session;
+
+import "session/session.proto";
+
+
+service SessionsService {
+
+  rpc CreateSession(CreateSessionRequest) returns (CreateSessionResponse);
+  rpc GetSession(GetSessionRequest) returns (GetSessionResponse);
+  rpc RevokeSession(RevokeSessionRequest) returns (RevokeSessionResponse);
+  rpc ListSessions(ListSessionsRequest) returns (ListSessionsResponse);
+  rpc RefreshSession(RefreshSessionRequest) returns (RefreshSessionResponse);
+  rpc ValidateSession(ValidateSessionRequest) returns (ValidateSessionResponse);
+  rpc TerminateAllSessions(TerminateAllSessionsRequest) returns (TerminateAllSessionsResponse);
+  rpc GetActiveSessions(GetActiveSessionsRequest) returns (GetActiveSessionsResponse);
+  rpc UpdateSessionActivity(UpdateSessionActivityRequest) returns (UpdateSessionActivityResponse);
+}
