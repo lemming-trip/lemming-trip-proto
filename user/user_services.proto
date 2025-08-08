@@ -2,7 +2,7 @@ syntax = "proto3";
 
 package lemmingtrip.user;
 
-import "lemmingtrip/user/user.proto";
+import "user/user.proto";
 
 // UserService provides methods for managing user accounts.
 // It includes operations for creating, retrieving, updating, deleting users,

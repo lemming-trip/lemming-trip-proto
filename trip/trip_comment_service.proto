@@ -2,7 +2,7 @@ syntax = "proto3";
 
 package lemmingtrip.trip;
 
-import "lemmingtrip/trip/trip_comment.proto";
+import "trip/trip_comment.proto";
 
 service TripCommentsService {
   // Create a new trip comment

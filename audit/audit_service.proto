@@ -1,7 +1,7 @@
 syntax = "proto3";
 package lemmingtrip.audit;
 
-import "lemmingtrip/audit/audit.proto";
+import "audit/audit.proto";
 
 // AuditService provides methods for managing security audit logs.
 service AuditService {

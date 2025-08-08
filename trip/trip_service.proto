@@ -1,7 +1,7 @@
 syntax = "proto3";
 package lemmingtrip.trip;
 
-import "lemmingtrip/trip/trip.proto";
+import "trip/trip.proto";
 
 service TripService {
   // CreateTrip creates a new trip with the provided details.

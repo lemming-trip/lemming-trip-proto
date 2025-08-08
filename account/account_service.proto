@@ -2,7 +2,7 @@ syntax = "proto3";
 
 package lemmingtrip.account;
 
-import "lemmingtrip/account/account.proto";
+import "account/account.proto";
 
 service AccountService {
   // CreateAccount creates a new account with the provided details.

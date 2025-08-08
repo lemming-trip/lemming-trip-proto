@@ -1,7 +1,7 @@
 syntax = "proto3";
 package lemmingtrip.trip;
 
-import "lemmingtrip/trip/trip_reply.proto";
+import "trip/trip_reply.proto";
 
 // TripRepliesService provides methods to manage trip replies.
 // It allows creating, retrieving, updating, deleting, and listing trip replies.

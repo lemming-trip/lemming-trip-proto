@@ -2,7 +2,7 @@ syntax = "proto3";
 
 package lemmingtrip.message;
 
-import "lemmingtrip/message/message.proto";
+import "message/message.proto";
 
 // MessageService provides methods for sending, editing, deleting, and retrieving messages.
 // It also includes methods for listing messages and marking them as read.

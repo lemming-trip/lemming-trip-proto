@@ -2,7 +2,7 @@ syntax = "proto3";
 
 package lemmingtrip.user;
 
-import "lemmingtrip/user/user_session.proto";
+import "user/user_session.proto";
 
 // UserSessionsService defines the service for managing user sessions.
 // It includes methods for creating, retrieving, revoking, and listing user sessions,

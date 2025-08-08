@@ -1,7 +1,7 @@
 syntax = "proto3";
 package lemmingtrip.gdpr;
 
-import "lemmingtrip/gdpr/gdpr.proto";
+import "gdpr/gdpr.proto";
 
 // The GdprService provides methods for managing user consents in compliance with GDPR regulations.
 service GdprService {

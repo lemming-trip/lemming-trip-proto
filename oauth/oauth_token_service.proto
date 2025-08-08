@@ -1,7 +1,7 @@
 syntax = "proto3";
 package lemmingtrip.oauth;
 
-import "lemmingtrip/oauth/oauth_token.proto";
+import "oauth/oauth_token.proto";
 
 // OAuthTokensService provides methods for managing OAuth tokens, including creation, retrieval, refreshing, validation, and revocation.
 // It allows clients to securely manage access tokens for user authentication and authorization.
